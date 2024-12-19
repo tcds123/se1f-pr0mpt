@@ -1,0 +1,11 @@
+[general]
+shuffle_caption = true
+keep_tokens = 1
+
+[[datasets]]
+resolution = 512                                    # 图像分辨率
+batch_size = 4                                      # 批次大小
+
+  [[datasets.subsets]]
+  image_dir = './dataset/naruto-blip-captions/data'                             # 指定包含训练图像的文件夹
+  metadata_file = './dataset/naruto-blip-captions/dataset_infos.json'            # 元数据文件名
