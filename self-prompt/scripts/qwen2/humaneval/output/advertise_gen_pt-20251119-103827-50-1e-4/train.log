@@ -1,0 +1,42 @@
+4.47.0
+Traceback (most recent call last):
+  File "/data/private/self-prompt/self-prompt/train/finetune.py", line 416, in <module>
+    main()
+  File "/data/private/self-prompt/self-prompt/train/finetune.py", line 62, in main
+    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+  File "/usr/local/lib/python3.10/dist-packages/transformers/hf_argparser.py", line 352, in parse_args_into_dataclasses
+    obj = dtype(**inputs)
+  File "<string>", line 13, in __init__
+  File "/data/private/self-prompt/self-prompt/train/arguments.py", line 155, in __post_init__
+    assert extension in {"jsonl", "json"}, "`train_file` should be a jsonl or a json file."
+AssertionError: `train_file` should be a jsonl or a json file.
+E1119 10:38:32.903000 9645 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 9752) of binary: /usr/bin/python
+Traceback (most recent call last):
+  File "/usr/local/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/run.py", line 919, in main
+    run(args)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/run.py", line 910, in run
+    elastic_launch(
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/data/private/self-prompt/self-prompt/train/finetune.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-11-19_10:38:32
+  host      : aimp-notebook-zhuldz-s7rj-0.headless-aimp-notebook-zhuldz-s7rj.app-t-aigc-8cqdt.svc.cluster.local
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 9752)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

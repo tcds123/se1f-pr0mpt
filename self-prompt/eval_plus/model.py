@@ -8,7 +8,7 @@ os.environ["HF_HOME"] = os.environ.get("HF_HOME", "./hf_home")
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel, pipeline
 
-DEVICE = 'cuda:1' if torch.cuda.is_available() else 'cpu'
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 EOS = [
     "<|endoftext|>",
@@ -189,7 +189,7 @@ class QWEN2(DecoderBase):
         )
         if not add_generation_prompt:
             text = text + assistant
-        model_inputs = self.tokenizer([text], return_tensors="pt").to(DEVICE)
+        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.model.device)
 
         generated_ids = self.model.generate(
             **model_inputs,

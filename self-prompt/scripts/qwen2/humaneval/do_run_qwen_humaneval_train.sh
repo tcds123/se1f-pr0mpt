@@ -2,6 +2,9 @@
 
 set -ex
 
+export WANDB_MODE=offline
+export PYTHONPATH=$PYTHONPATH:/data/zhuldz/self-prompt/self-prompt
+
 EXTRA_LEN=50
 LR=1e-4
 NUM_GPUS=1
@@ -16,14 +19,14 @@ DATESTR=`date +%Y%m%d-%H%M%S`
 RUN_NAME=advertise_gen_pt
 
 MODEL_NAME="qwen2"
-MODEL_PATH="/data/team/zongwx1/llm_models/qwen2-7b-instruct"
+MODEL_PATH="/data/zhuldz/self-prompt/models/Qwen2-7B-Instruct"
 DATASET_NAME="humaneval"
-DATASET_PATH=formatted_data/humaneval/train.jsonl
+DATASET_PATH="/data/private/self-prompt/self-prompt/prompt/formatted_data/humaneval/train.jsonl"
 OUTPUT_DIR=output/${RUN_NAME}-${DATESTR}-${EXTRA_LEN}-${LR}
 
 mkdir -p $OUTPUT_DIR
 
-torchrun --standalone --nnodes=1 --nproc_per_node=$NUM_GPUS train/finetune.py \
+torchrun --standalone --nnodes=1 --nproc_per_node=$NUM_GPUS /data/private/self-prompt/self-prompt/train/finetune.py \
     --train_format input-output \
     --dataset_name $DATASET_NAME \
     --train_file $DATASET_PATH \

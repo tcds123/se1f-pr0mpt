@@ -50,9 +50,9 @@ The text is:
     response = get_response(gen_function, prompt, min_len, max_len)
 
     final_sys_prompt = response
-    if not os.path.exists('./prompt/system_prompt'):
-        os.mkdir('./prompt/system_prompt')
-    with open('./prompt/system_prompt/' + model_name + '_' + dataset_name +'.txt', 'w', encoding='utf-8') as f:
+    if not os.path.exists('./system_prompt'):
+        os.mkdir('./system_prompt')
+    with open('./system_prompt/' + model_name + '_' + dataset_name +'.txt', 'w', encoding='utf-8') as f:
         f.write(final_sys_prompt)
     
     return final_sys_prompt
@@ -81,14 +81,15 @@ def get_response(gen_function, prompt, min_len: int = None, max_len: int = None)
 
 
 if __name__ == "__main__":
-    model_path = "/data/team/zongwx1/llm_models/chatglm3-6b"
+    # model_path = "/data/team/zongwx1/llm_models/chatglm3-6b"
     # model_path = "/data/team/zongwx1/llm_models/qwen2-7b-instruct"
+    model_path = "/data/public/models/base/Qwen/Qwen2-7B-Instruct"
     # model_path = "/data/team/zongwx1/llm_models/llama3-8b-instruct"
     # model_path = "/data/team/zongwx1/llm_models/Phi-3-small-8k-instruct"
     # model_path = "/data/team/zongwx1/llm_models/gemma-2-9b-it"
     # model_path = "/data/team/zongwx1/llm_models/Yi-1.5-9B-Chat"
-    model_name = 'glm3'
-    # model_name = 'qwen2'
+    #model_name = 'glm3'
+    model_name = 'qwen2'
     # model_name = 'llama3'
     # model_name = 'phi3'
     # model_name = 'gemma2'
@@ -118,7 +119,7 @@ if __name__ == "__main__":
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 
-    dataset_name = 'humaneval'
+    #ataset_name = 'humaneval'
     dataset_name = 'mbpp'
     sys_prompt = generate_sys_prompt(model_name, model, tokenizer, device, dataset_name)
     print(sys_prompt)

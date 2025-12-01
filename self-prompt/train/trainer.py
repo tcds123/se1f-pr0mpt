@@ -183,7 +183,7 @@ class PrefixTrainer(Trainer):
             self._save_checkpoint(model, trial, metrics=metrics)
             self.control = self.callback_handler.on_save(self.args, self.state, self.control)
 
-    def _maybe_log_save_evaluate_new(self, tr_loss, grad_norm, model, trial, epoch, ignore_keys_for_eval=None):
+    def _maybe_log_save_evaluate_new(self, tr_loss, grad_norm, model, trial, epoch, ignore_keys_for_eval=None,*args,**kwargs):
         if self.control.should_log and self.state.global_step > self._globalstep_last_logged:
             if is_torch_xla_available():
                 xm.mark_step()

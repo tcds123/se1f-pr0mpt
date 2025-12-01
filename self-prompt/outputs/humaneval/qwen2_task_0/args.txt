@@ -1,0 +1,1 @@
+Namespace(model_type='qwen2', model_size='chat', bs=1, temperature=0.05, dataset='humaneval', root='outputs', n_samples=1, resume=True, task=0, sys_prompt_index=-1, specified_data=None, contract_type='none', greedy=True, id_range=None)

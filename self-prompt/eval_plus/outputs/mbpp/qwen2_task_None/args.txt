@@ -1,0 +1,1 @@
+Namespace(model_type='qwen2', model_size='chat', bs=1, temperature=0.0, dataset='mbpp', root='/data/private/self-prompt/self-prompt/eval_plus/outputs', n_samples=1, resume=False, task=None, sys_prompt_index=-1, specified_data=None, contract_type='none', greedy=False, id_range=None)

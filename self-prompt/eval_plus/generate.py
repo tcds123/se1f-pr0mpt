@@ -21,7 +21,7 @@ MODEL_MAPPING = {
         "chat": "/data/team/zongwx1/llm_models/chatglm3-6b"
     },
     "qwen2": {
-        "chat": "/data/team/zongwx1/llm_models/qwen2-7b-instruct"
+        "chat": "/data/public/models/base/Qwen/Qwen2-7B-Instruct"
     },
     "llama3": {
         "chat": "/data/team/zongwx1/llm_models/llama3-8b-instruct"
@@ -127,7 +127,7 @@ def code_generate(args,
                 outputs = model.codegen(
                     args.sys_prompt_index,
                     construct_contract_prompt(task["prompt"], args.contract_type, task["contract"]).strip(),
-                    do_sample=not args.greedy,
+                    #do_sample=not args.greedy,
                     num_samples=args.n_samples - sidx,
                 )
 

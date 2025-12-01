@@ -103,7 +103,7 @@ def main():
         with open('./prompt/system_prompt/' + model_args.model_name + '_' + data_args.dataset_name + '.txt', 'r', encoding='utf-8') as f:
             sys_prompt = f.read()
     elif 'qwen' in model_args.model_name:
-        with open('./prompt/system_prompt/' + model_args.model_name + '_' + data_args.dataset_name + '.txt', 'r', encoding='utf-8') as f:
+        with open('/data/private/self-prompt/self-prompt/prompt/system_prompt/' + model_args.model_name + '_' + data_args.dataset_name + '.txt', 'r', encoding='utf-8') as f:
             sys_prompt = f.read()
         # qwen2_user_prompt = {"prompt": "Can you complete the following Python function?\n```python\n{prompt}\n```\n"}
         qwen2_user_prompt = {"prompt": "{prompt}"}

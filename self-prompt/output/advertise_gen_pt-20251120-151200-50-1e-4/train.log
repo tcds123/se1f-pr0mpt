@@ -1,0 +1,280 @@
+4.47.0
+11/20/2025 15:12:18 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: False
+11/20/2025 15:12:18 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=False,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=None,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=False,
+do_train=False,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=no,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=None,
+generation_num_beams=None,
+gradient_accumulation_steps=16,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=None,
+hub_strategy=every_save,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=0.0001,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/advertise_gen_pt-20251120-151200-50-1e-4/runs/Nov20_15-12-18_aimp-notebook-zhuldz-s7rj-0,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=1.0,
+logging_strategy=steps,
+lr_scheduler_kwargs={},
+lr_scheduler_type=linear,
+max_grad_norm=1.0,
+max_steps=5000,
+metric_for_best_model=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3.0,
+optim=adamw_torch,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/advertise_gen_pt-20251120-151200-50-1e-4,
+overwrite_output_dir=False,
+past_index=-1,
+per_device_eval_batch_size=8,
+per_device_train_batch_size=1,
+predict_with_generate=False,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=['tensorboard', 'wandb'],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=output/advertise_gen_pt-20251120-151200-50-1e-4,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=steps,
+save_total_limit=None,
+seed=42,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=None,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+[INFO|configuration_utils.py:693] 2025-11-20 15:12:18,374 >> loading configuration file /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct/config.json
+[INFO|configuration_utils.py:762] 2025-11-20 15:12:18,381 >> Model config Qwen2Config {
+  "_name_or_path": "/data/zhuldz/self-prompt/models/Qwen2-7B-Instruct",
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 3584,
+  "initializer_range": 0.02,
+  "intermediate_size": 18944,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2",
+  "num_attention_heads": 28,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 4,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.47.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 152064
+}
+
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,402 >> loading file vocab.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,402 >> loading file merges.txt
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,402 >> loading file tokenizer.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,402 >> loading file added_tokens.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,402 >> loading file special_tokens_map.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,403 >> loading file tokenizer_config.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:18,403 >> loading file chat_template.jinja
+[INFO|tokenization_utils_base.py:2300] 2025-11-20 15:12:18,681 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file vocab.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file merges.txt
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file tokenizer.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file added_tokens.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file special_tokens_map.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file tokenizer_config.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 15:12:20,310 >> loading file chat_template.jinja
+[INFO|tokenization_utils_base.py:2300] 2025-11-20 15:12:20,546 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|modeling_utils.py:3950] 2025-11-20 15:12:20,551 >> loading weights file /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct/model.safetensors.index.json
+[INFO|modeling_utils.py:4050] 2025-11-20 15:12:20,552 >> Will use torch_dtype=torch.bfloat16 as defined in model's config object
+[INFO|modeling_utils.py:1641] 2025-11-20 15:12:20,552 >> Instantiating MyQwen2ForCausalLM model under default dtype torch.bfloat16.
+[INFO|configuration_utils.py:1140] 2025-11-20 15:12:20,556 >> Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "eos_token_id": 151645
+}
+
+************** My Qwen2Model
+embed_tokens.my_word_embeddings.weight
+Loading checkpoint shards:   0%|                                                                                       | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|███████████████████▊                                                           | 1/4 [00:01<00:05,  1.74s/it]Loading checkpoint shards:  50%|███████████████████████████████████████▌                                       | 2/4 [00:03<00:03,  1.91s/it]Loading checkpoint shards:  75%|███████████████████████████████████████████████████████████▎                   | 3/4 [00:05<00:02,  2.03s/it]Loading checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████████████| 4/4 [00:08<00:00,  2.11s/it]Loading checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████████████| 4/4 [00:08<00:00,  2.04s/it]
+[INFO|modeling_utils.py:4839] 2025-11-20 15:12:42,924 >> Some weights of the model checkpoint at /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct were not used when initializing MyQwen2ForCausalLM: ['model.embed_tokens.weight']
+- This IS expected if you are initializing MyQwen2ForCausalLM from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing MyQwen2ForCausalLM from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+[WARNING|modeling_utils.py:4851] 2025-11-20 15:12:42,924 >> Some weights of MyQwen2ForCausalLM were not initialized from the model checkpoint at /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct and are newly initialized: ['model.embed_tokens.my_word_embeddings.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[INFO|configuration_utils.py:1093] 2025-11-20 15:12:42,934 >> loading configuration file /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct/generation_config.json
+[INFO|configuration_utils.py:1140] 2025-11-20 15:12:42,935 >> Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "do_sample": true,
+  "eos_token_id": [
+    151645,
+    151643
+  ],
+  "pad_token_id": 151643,
+  "repetition_penalty": 1.05,
+  "temperature": 0.7,
+  "top_k": 20,
+  "top_p": 0.8
+}
+
+/data/private/self-prompt/self-prompt/train/trainer.py:59: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `PrefixTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+11/20/2025 15:12:43 - WARNING - accelerate.utils.other - Detected kernel version 3.10.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/finetune.py", line 416, in <module>
+[rank0]:     main()
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/finetune.py", line 360, in main
+[rank0]:     trainer = PrefixTrainer(
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/trainer.py", line 59, in __init__
+[rank0]:     super().__init__(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/utils/deprecation.py", line 165, in wrapped_func
+[rank0]:     return func(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 608, in __init__
+[rank0]:     self._move_model_to_device(model, args.device)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 881, in _move_model_to_device
+[rank0]:     model = model.to(device)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/modeling_utils.py", line 3164, in to
+[rank0]:     return super().to(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1369, in to
+[rank0]:     return self._apply(convert)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 928, in _apply
+[rank0]:     module._apply(fn)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 928, in _apply
+[rank0]:     module._apply(fn)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 928, in _apply
+[rank0]:     module._apply(fn)
+[rank0]:   [Previous line repeated 2 more times]
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 955, in _apply
+[rank0]:     param_applied = fn(param)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in convert
+[rank0]:     return t.to(
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 130.00 MiB. GPU 0 has a total capacity of 44.32 GiB of which 99.62 MiB is free. Process 80642 has 36.44 GiB memory in use. Process 9815 has 7.77 GiB memory in use. Of the allocated memory 7.30 GiB is allocated by PyTorch, and 61.67 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank0]:[W1120 15:12:47.778595958 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+E1120 15:12:47.957000 68581 torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: 1) local_rank: 0 (pid: 68840) of binary: /data/zhuldz/lunwen/lunwen/bin/python
+Traceback (most recent call last):
+  File "/data/zhuldz/lunwen/lunwen/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/run.py", line 901, in main
+    run(args)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/run.py", line 892, in run
+    elastic_launch(
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 143, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 277, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/data/private/self-prompt/self-prompt/train/finetune.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-11-20_15:12:47
+  host      : aimp-notebook-zhuldz-s7rj-0.headless-aimp-notebook-zhuldz-s7rj.app-t-aigc-8cqdt.svc.cluster.local
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 68840)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

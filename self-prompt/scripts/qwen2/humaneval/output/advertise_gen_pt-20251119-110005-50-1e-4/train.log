@@ -1,0 +1,224 @@
+4.47.0
+11/19/2025 11:00:10 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: False
+11/19/2025 11:00:10 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=False,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=None,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=False,
+do_train=False,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=no,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=None,
+generation_num_beams=None,
+gradient_accumulation_steps=16,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=None,
+hub_strategy=every_save,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=0.0001,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/advertise_gen_pt-20251119-110005-50-1e-4/runs/Nov19_11-00-10_aimp-notebook-zhuldz-s7rj-0,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=1.0,
+logging_strategy=steps,
+lr_scheduler_kwargs={},
+lr_scheduler_type=linear,
+max_grad_norm=1.0,
+max_steps=5000,
+metric_for_best_model=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3.0,
+optim=adamw_torch,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/advertise_gen_pt-20251119-110005-50-1e-4,
+overwrite_output_dir=False,
+past_index=-1,
+per_device_eval_batch_size=8,
+per_device_train_batch_size=1,
+predict_with_generate=False,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=['tensorboard'],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=output/advertise_gen_pt-20251119-110005-50-1e-4,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=steps,
+save_total_limit=None,
+seed=42,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=None,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+[INFO|configuration_utils.py:693] 2025-11-19 11:00:10,852 >> loading configuration file /data/private/self-prompt/self-prompt/my_model/Qwen2-7B-Instruct/config.json
+[INFO|configuration_utils.py:762] 2025-11-19 11:00:10,854 >> Model config Qwen2Config {
+  "_name_or_path": "/data/private/self-prompt/self-prompt/my_model/Qwen2-7B-Instruct",
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 3584,
+  "initializer_range": 0.02,
+  "intermediate_size": 18944,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2",
+  "num_attention_heads": 28,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 4,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.47.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 152064
+}
+
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file vocab.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file merges.txt
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file tokenizer.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file added_tokens.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file special_tokens_map.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file tokenizer_config.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-19 11:00:10,996 >> loading file chat_template.jinja
+[INFO|tokenization_utils_base.py:2300] 2025-11-19 11:00:11,309 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[WARNING|dynamic_module_utils.py:188] 2025-11-19 11:00:11,388 >> Encountered exception while importing my_embedding: No module named 'my_embedding'
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/finetune.py", line 416, in <module>
+[rank0]:     main()
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/finetune.py", line 246, in main
+[rank0]:     model = AutoModelForCausalLM.from_pretrained(
+[rank0]:   File "/usr/local/lib/python3.10/dist-packages/transformers/models/auto/auto_factory.py", line 553, in from_pretrained
+[rank0]:     model_class = get_class_from_dynamic_module(
+[rank0]:   File "/usr/local/lib/python3.10/dist-packages/transformers/dynamic_module_utils.py", line 541, in get_class_from_dynamic_module
+[rank0]:     final_module = get_cached_module_file(
+[rank0]:   File "/usr/local/lib/python3.10/dist-packages/transformers/dynamic_module_utils.py", line 366, in get_cached_module_file
+[rank0]:     modules_needed = check_imports(resolved_module_file)
+[rank0]:   File "/usr/local/lib/python3.10/dist-packages/transformers/dynamic_module_utils.py", line 198, in check_imports
+[rank0]:     raise ImportError(
+[rank0]: ImportError: This modeling file requires the following packages that were not found in your environment: my_embedding. Run `pip install my_embedding`
+[rank0]:[W1119 11:00:11.363646963 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+E1119 11:00:12.253000 13081 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 13190) of binary: /usr/bin/python
+Traceback (most recent call last):
+  File "/usr/local/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/run.py", line 919, in main
+    run(args)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/run.py", line 910, in run
+    elastic_launch(
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/data/private/self-prompt/self-prompt/train/finetune.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-11-19_11:00:12
+  host      : aimp-notebook-zhuldz-s7rj-0.headless-aimp-notebook-zhuldz-s7rj.app-t-aigc-8cqdt.svc.cluster.local
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 13190)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

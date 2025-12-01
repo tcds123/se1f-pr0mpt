@@ -1,10 +1,10 @@
 mkdir -p results/humaneval
 
 VLLM_N_GPUS=8 python generate.py \
-  --model_type codeqwen \
-  --model_size base \
+  --model_type qwen2 \
+  --model_size chat \
   --bs 1 \
-  --temperature 0 \
+  --temperature 0.5 \
   --n_samples 1 \
   --resume \
   --greedy \

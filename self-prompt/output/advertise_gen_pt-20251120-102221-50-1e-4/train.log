@@ -1,0 +1,860 @@
+4.47.0
+11/20/2025 10:22:36 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: False
+11/20/2025 10:22:36 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=False,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=None,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=False,
+do_train=False,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=no,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=None,
+generation_num_beams=None,
+gradient_accumulation_steps=16,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=None,
+hub_strategy=every_save,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=0.0001,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/advertise_gen_pt-20251120-102221-50-1e-4/runs/Nov20_10-22-36_aimp-notebook-zhuldz-s7rj-0,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=1.0,
+logging_strategy=steps,
+lr_scheduler_kwargs={},
+lr_scheduler_type=linear,
+max_grad_norm=1.0,
+max_steps=5000,
+metric_for_best_model=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3.0,
+optim=adamw_torch,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/advertise_gen_pt-20251120-102221-50-1e-4,
+overwrite_output_dir=False,
+past_index=-1,
+per_device_eval_batch_size=8,
+per_device_train_batch_size=1,
+predict_with_generate=False,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=['tensorboard', 'wandb'],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=output/advertise_gen_pt-20251120-102221-50-1e-4,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=steps,
+save_total_limit=None,
+seed=42,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=None,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+[INFO|configuration_utils.py:693] 2025-11-20 10:22:36,848 >> loading configuration file /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct/config.json
+[INFO|configuration_utils.py:762] 2025-11-20 10:22:36,856 >> Model config Qwen2Config {
+  "_name_or_path": "/data/zhuldz/self-prompt/models/Qwen2-7B-Instruct",
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 3584,
+  "initializer_range": 0.02,
+  "intermediate_size": 18944,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2",
+  "num_attention_heads": 28,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 4,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.47.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 152064
+}
+
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file vocab.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file merges.txt
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file tokenizer.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file added_tokens.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file special_tokens_map.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file tokenizer_config.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:36,874 >> loading file chat_template.jinja
+[INFO|tokenization_utils_base.py:2300] 2025-11-20 10:22:37,097 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file vocab.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file merges.txt
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file tokenizer.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file added_tokens.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file special_tokens_map.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file tokenizer_config.json
+[INFO|tokenization_utils_base.py:2028] 2025-11-20 10:22:38,383 >> loading file chat_template.jinja
+[INFO|tokenization_utils_base.py:2300] 2025-11-20 10:22:38,625 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|modeling_utils.py:3950] 2025-11-20 10:22:38,630 >> loading weights file /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct/model.safetensors.index.json
+[INFO|modeling_utils.py:4050] 2025-11-20 10:22:38,631 >> Will use torch_dtype=torch.bfloat16 as defined in model's config object
+[INFO|modeling_utils.py:1641] 2025-11-20 10:22:38,631 >> Instantiating MyQwen2ForCausalLM model under default dtype torch.bfloat16.
+[INFO|configuration_utils.py:1140] 2025-11-20 10:22:38,636 >> Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "eos_token_id": 151645
+}
+
+************** My Qwen2Model
+embed_tokens.my_word_embeddings.weight
+Loading checkpoint shards:   0%|                                                                                      | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|███████████████████▌                                                          | 1/4 [00:01<00:03,  1.26s/it]Loading checkpoint shards:  50%|███████████████████████████████████████                                       | 2/4 [00:03<00:04,  2.00s/it]Loading checkpoint shards:  75%|██████████████████████████████████████████████████████████▌                   | 3/4 [00:06<00:02,  2.23s/it]Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████| 4/4 [00:07<00:00,  1.95s/it]Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████| 4/4 [00:07<00:00,  1.95s/it]
+[INFO|modeling_utils.py:4839] 2025-11-20 10:23:01,013 >> Some weights of the model checkpoint at /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct were not used when initializing MyQwen2ForCausalLM: ['model.embed_tokens.weight']
+- This IS expected if you are initializing MyQwen2ForCausalLM from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing MyQwen2ForCausalLM from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+[WARNING|modeling_utils.py:4851] 2025-11-20 10:23:01,013 >> Some weights of MyQwen2ForCausalLM were not initialized from the model checkpoint at /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct and are newly initialized: ['model.embed_tokens.my_word_embeddings.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[INFO|configuration_utils.py:1093] 2025-11-20 10:23:01,021 >> loading configuration file /data/zhuldz/self-prompt/models/Qwen2-7B-Instruct/generation_config.json
+[INFO|configuration_utils.py:1140] 2025-11-20 10:23:01,021 >> Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "do_sample": true,
+  "eos_token_id": [
+    151645,
+    151643
+  ],
+  "pad_token_id": 151643,
+  "repetition_penalty": 1.05,
+  "temperature": 0.7,
+  "top_k": 20,
+  "top_p": 0.8
+}
+
+/data/private/self-prompt/self-prompt/train/trainer.py:59: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `PrefixTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(*args, **kwargs)
+11/20/2025 10:23:01 - WARNING - accelerate.utils.other - Detected kernel version 3.10.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[INFO|trainer.py:684] 2025-11-20 10:23:32,921 >> max_steps is given, it will override any value given in num_train_epochs
+[INFO|trainer.py:2361] 2025-11-20 10:23:33,287 >> ***** Running training *****
+[INFO|trainer.py:2362] 2025-11-20 10:23:33,287 >>   Num examples = 130
+[INFO|trainer.py:2363] 2025-11-20 10:23:33,287 >>   Num Epochs = 625
+[INFO|trainer.py:2364] 2025-11-20 10:23:33,287 >>   Instantaneous batch size per device = 1
+[INFO|trainer.py:2367] 2025-11-20 10:23:33,287 >>   Total train batch size (w. parallel, distributed & accumulation) = 16
+[INFO|trainer.py:2368] 2025-11-20 10:23:33,287 >>   Gradient Accumulation steps = 16
+[INFO|trainer.py:2369] 2025-11-20 10:23:33,287 >>   Total optimization steps = 5,000
+[INFO|trainer.py:2370] 2025-11-20 10:23:33,288 >>   Number of trainable parameters = 1,089,994,752
+[INFO|integration_utils.py:811] 2025-11-20 10:23:33,313 >> Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+wandb: Tracking run with wandb version 0.22.3
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /data/zhuldz/self-prompt/self-prompt/wandb/offline-run-20251120_102336-ihbfjl8k
+  0%|                                                                                                              | 0/5000 [00:00<?, ?it/s][WARNING|logging.py:328] 2025-11-20 10:23:37,815 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+**************** extra_ids:  ['9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #']
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|                                                                                                   | 1/5000 [00:11<15:37:46, 11.26s/it]                                                                                                                                            {'loss': 10.663, 'grad_norm': 572.0, 'learning_rate': 9.998e-05, 'epoch': 0.12}
+  0%|                                                                                                   | 1/5000 [00:11<15:37:46, 11.26s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[0.365234375, 0.36328125, 0.36328125, 0.36328125, 0.36328125, 0.36328125, 0.36328125, 0.36328125, 0.36328125, 0.36328125]
+sample_list len = 152064
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|                                                                                                   | 2/5000 [00:22<15:44:29, 11.34s/it]                                                                                                                                            {'loss': 9.1269, 'grad_norm': 588.0, 'learning_rate': 9.996000000000001e-05, 'epoch': 0.25}
+  0%|                                                                                                   | 2/5000 [00:22<15:44:29, 11.34s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[0.69140625, 0.6640625, 0.66015625, 0.66015625, 0.65625, 0.65234375, 0.65234375, 0.65234375, 0.65234375, 0.65234375]
+sample_list len = 152064
+weight:  1.1441
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|                                                                                                   | 3/5000 [00:34<15:47:02, 11.37s/it]                                                                                                                                            {'loss': 8.0009, 'grad_norm': 612.0, 'learning_rate': 9.994e-05, 'epoch': 0.37}
+  0%|                                                                                                   | 3/5000 [00:34<15:47:02, 11.37s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[0.9609375, 0.8984375, 0.8984375, 0.8984375, 0.89453125, 0.89453125, 0.8828125, 0.8828125, 0.8828125, 0.8828125]
+sample_list len = 152064
+weight:  1.1234
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|                                                                                                   | 4/5000 [00:45<15:50:52, 11.42s/it]                                                                                                                                            {'loss': 7.8363, 'grad_norm': 596.0, 'learning_rate': 9.992e-05, 'epoch': 0.49}
+  0%|                                                                                                   | 4/5000 [00:45<15:50:52, 11.42s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[1.1953125, 1.109375, 1.1015625, 1.1015625, 1.09375, 1.09375, 1.0859375, 1.0859375, 1.0859375, 1.0859375]
+sample_list len = 152064
+weight:  1.0206
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|                                                                                                   | 5/5000 [00:57<15:55:31, 11.48s/it]                                                                                                                                            {'loss': 6.7932, 'grad_norm': 708.0, 'learning_rate': 9.99e-05, 'epoch': 0.62}
+  0%|                                                                                                   | 5/5000 [00:57<15:55:31, 11.48s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[1.3984375, 1.3125, 1.2890625, 1.28125, 1.28125, 1.2734375, 1.265625, 1.2578125, 1.2578125, 1.25]
+sample_list len = 152064
+weight:  1.1331
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|                                                                                                   | 6/5000 [01:08<16:03:39, 11.58s/it]                                                                                                                                            {'loss': 6.4027, 'grad_norm': 556.0, 'learning_rate': 9.988000000000001e-05, 'epoch': 0.74}
+  0%|                                                                                                   | 6/5000 [01:09<16:03:39, 11.58s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[1.5546875, 1.5, 1.4453125, 1.4375, 1.4296875, 1.4296875, 1.4296875, 1.4140625, 1.40625, 1.390625]
+sample_list len = 152064
+weight:  1.0575
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|▏                                                                                                  | 7/5000 [01:20<16:16:41, 11.74s/it]                                                                                                                                            {'loss': 6.7593, 'grad_norm': 430.0, 'learning_rate': 9.986000000000001e-05, 'epoch': 0.86}
+  0%|▏                                                                                                  | 7/5000 [01:21<16:16:41, 11.74s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[1.671875, 1.640625, 1.59375, 1.578125, 1.5703125, 1.5625, 1.5625, 1.546875, 1.546875, 1.5234375]
+sample_list len = 152064
+weight:  0.9472
+***************** 检测到loss上升 *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|▏                                                                                                  | 8/5000 [01:33<16:29:11, 11.89s/it]                                                                                                                                            {'loss': 6.5194, 'grad_norm': 372.0, 'learning_rate': 9.984e-05, 'epoch': 0.98}
+  0%|▏                                                                                                  | 8/5000 [01:33<16:29:11, 11.89s/it]不完全一样
+不完全一样
+  0%|▏                                                                                                  | 9/5000 [01:34<12:03:21,  8.70s/it]                                                                                                                                            {'loss': 0.6845, 'grad_norm': 62.25, 'learning_rate': 9.982e-05, 'epoch': 1.0}
+  0%|▏                                                                                                  | 9/5000 [01:35<12:03:21,  8.70s/it]不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+不完全一样
+[1.8515625, 1.828125, 1.8046875, 1.7890625, 1.78125, 1.78125, 1.765625, 1.765625, 1.7578125, 1.7578125]
+sample_list len = 152064
+weight:  1.8987
+***************** epoch < 1, skip *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+不完全一样
+不完全一样
+  0%|▏                                                                                                 | 10/5000 [01:47<13:34:28,  9.79s/it]                                                                                                                                            {'loss': 5.6664, 'grad_norm': 572.0, 'learning_rate': 9.98e-05, 'epoch': 1.12}
+  0%|▏                                                                                                 | 10/5000 [01:47<13:34:28,  9.79s/it][1.9296875, 1.921875, 1.8828125, 1.875, 1.875, 1.8671875, 1.859375, 1.8515625, 1.8515625, 1.8515625]
+sample_list len = 152064
+weight:  0.1208
+***************** 检测到loss上升 *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|▏                                                                                                 | 11/5000 [01:59<14:44:33, 10.64s/it]                                                                                                                                            {'loss': 6.0917, 'grad_norm': 544.0, 'learning_rate': 9.978000000000001e-05, 'epoch': 1.25}
+  0%|▏                                                                                                 | 11/5000 [01:59<14:44:33, 10.64s/it][2.03125, 2.0, 1.9921875, 1.9765625, 1.9609375, 1.9453125, 1.9375, 1.9375, 1.9140625, 1.9140625]
+sample_list len = 152064
+weight:  0.9302
+***************** 检测到loss上升 *****************
+*************** sys_input_ids:  tensor([151644,   8948,    198,  21608,    525,    458,  24514,  15473,  17847,
+           311,   8193,  13027,  12111,    292,   9904,    429,    646,  29720,
+          1882,   5257,   4494,    315,  11127,     11,   6923,   3601,  16275,
+            11,    323,   3705,   6351,   3491,  98146,   9079,     13,  13139,
+           432,  17601,    821,  33686,     11,  35972,  82599,     11,   1467,
+          8692,     11,    476,  12218,   5980,  11513,     11,    697,  62139,
+           304,  13027,  20081,    498,    311,   1855,  31945,   5746,     11,
+          6846,     11,    323,  13454,    429,  27968,    311,  16807,   8502,
+            13,   3216,   8660,    279,   3491,   5114,     11,  24588,   1376,
+          7332,     11,    323,  24931,   8311,  25185,     11,    498,   5978,
+           279,   4401,    315,   4240,     11,  11050,     11,    323,  10306,
+           480,   2038,     13,   4615,  18726,   2239,    311,  34888,  13027,
+           594,   9080,  20186,   1741,    438,  16212,  13828,     11,  33506,
+           300,     11,   6867,  15406,     11,    323,   2463,  60403,     12,
+         12675,     11,   4221,   3800,     11,    311,  21403,   1931,  30084,
+          5322,    448,  14219,     13,  13139,    279,   3383,   7460,  11589,
+         34776,    821,     11,  41018,  29425,     11,   6825,   9124,   8040,
+            11,    476,  11220,   5662,   6832,   4119,     11,    697,   7361,
+           304,  13027,  25219,    498,    311,   6359,  21765,   9904,    429,
+          3367,    279,   8426,  10659,    315,  14944,    323,   5068,     24,
+            11,    198,   1156,   1125,     60,     23,  87473,     21,   1378,
+            13,    508,   5571, 151643,   4199,    912,   2477,    504,     22,
+           286,    271,    284,  10939, 151645,    510,  11750,    220,    470,
+           323,    518,    304,     20,   3447,    421,  18509,   2890,     19,
+           982,  73594,     16,     15,   2651,    264,    593,  28880,   9258,
+         39433,   1429,     17,    671, 151643], device='cuda:0')
+*************** decoded_sys_input_ids:  ['<|im_start|>', 'system', '\n', '"You', ' are', ' an', ' intelligent', ' programming', ' assistant', ' to', ' produce', ' Python', ' algorithm', 'ic', ' solutions', ' that', ' can', ' efficiently', ' process', ' various', ' types', ' of', ' inputs', ',', ' generate', ' expected', ' outputs', ',', ' and', ' handle', ' complex', ' problem', '-solving', ' tasks', '.', ' Whether', ' it', ' involves', ' data', ' manipulation', ',', ' mathematical', ' computations', ',', ' text', ' processing', ',', ' or', ' logic', '-based', ' challenges', ',', ' your', ' proficiency', ' in', ' Python', ' enables', ' you', ' to', ' create', ' versatile', ' functions', ',', ' classes', ',', ' and', ' modules', ' that', ' cater', ' to', ' diverse', ' requirements', '.', ' By', ' understanding', ' the', ' problem', ' statement', ',', ' identifying', ' key', ' variables', ',', ' and', ' implementing', ' appropriate', ' algorithms', ',', ' you', ' ensure', ' the', ' development', ' of', ' clean', ',', ' efficient', ',', ' and', ' maintain', 'able', ' code', '.', ' Your', ' expertise', ' extends', ' to', ' utilizing', ' Python', "'s", ' rich', ' libraries', ' such', ' as', ' Num', 'Py', ',', ' Pand', 'as', ',', ' Mat', 'plotlib', ',', ' and', ' Sc', 'ikit', '-', 'learn', ',', ' among', ' others', ',', ' to', ' tackle', ' real', '-world', ' problems', ' with', ' ease', '.', ' Whether', ' the', ' task', ' requires', ' handling', ' numerical', ' data', ',', ' analyzing', ' datasets', ',', ' creating', ' visual', 'izations', ',', ' or', ' developing', ' machine', ' learning', ' models', ',', ' your', ' skills', ' in', ' Python', ' empower', ' you', ' to', ' deliver', ' robust', ' solutions', ' that', ' meet', ' the', ' highest', ' standards', ' of', ' functionality', ' and', ' performance', '9', ',', '\n', ' first', '],', ']', '8', ' Constraints', '6', ' two', '.', ' [', ' Input', '<|endoftext|>', '(str', ' add', ' non', ' from', '7', '       ', '\n\n', ' =', '(arr', '<|im_end|>', ':\n', ' elem', ' ', ' return', ' and', ' at', ' in', '5', '[:', ' if', ' digits', ' arr', '4', '):\n', '```', '1', '0', ' <=', ' a', '))', '(elem', ' Output', '-empty', ' most', '2', ' #', '<|endoftext|>']
+  0%|▏                                                                                                 | 12/5000 [02:12<15:28:44, 11.17s/it]                                                                                                                                            {'loss': 5.218, 'grad_norm': 498.0, 'learning_rate': 9.976000000000001e-05, 'epoch': 1.37}
+  0%|▏                                                                                                 | 12/5000 [02:12<15:28:44, 11.17s/it][2.140625, 2.125, 2.078125, 2.046875, 2.046875, 2.03125, 2.015625, 2.015625, 1.9921875, 1.984375]
+sample_list len = 152064
+weight:  1.1434
+[25219]
+[' empower']
+----------
+[3216]
+[' By']
+----------
+[300]
+['as']
+----------
+[151644]
+['<|im_start|>']
+----------
+[13828]
+['Py']
+----------
+[25219, 3216, 300, 151644, 13828]
+*********** self.should_careful_structure:  empower,  By, as, <|im_start|>, Py, Traceback (most recent call last):
+  File "/data/private/self-prompt/self-prompt/train/finetune.py", line 416, in <module>
+    main()
+  File "/data/private/self-prompt/self-prompt/train/finetune.py", line 374, in main
+    trainer.train(resume_from_checkpoint=checkpoint)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 2164, in train
+    return inner_training_loop(
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 2522, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 3655, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 3709, in compute_loss
+    outputs = model(**inputs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/qwen2_model.py", line 132, in forward
+    outputs = self.model(
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 854, in forward
+    inputs_embeds = self.embed_tokens(input_ids)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1879, in _call_impl
+    return inner()
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1827, in inner
+    result = forward_call(*args, **kwargs)
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 113, in forward
+    embeddings = self.my_train_sys_emb(input_ids)
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 148, in my_train_sys_emb
+    self.get_change_most_input_ids(w_embeddings.weight.detach(), self.my_word_embeddings.weight.detach())
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 193, in get_change_most_input_ids
+    self.get_change_most_ids(self.label_set, ori_emb_table, cur_emb_table)
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 278, in get_change_most_ids
+    self.evaluation(extra_prompt)
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 452, in evaluation
+    self.code_generate(save_path, extra_prompt, index)
+  File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 491, in code_generate
+    from eval_plus.model import make_model
+  File "/data/zhuldz/self-prompt/self-prompt/eval_plus/model.py", line 4, in <module>
+    import chardet
+ModuleNotFoundError: No module named 'chardet'
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/finetune.py", line 416, in <module>
+[rank0]:     main()
+[rank0]:   File "/data/private/self-prompt/self-prompt/train/finetune.py", line 374, in main
+[rank0]:     trainer.train(resume_from_checkpoint=checkpoint)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 2164, in train
+[rank0]:     return inner_training_loop(
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 2522, in _inner_training_loop
+[rank0]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 3655, in training_step
+[rank0]:     loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/trainer.py", line 3709, in compute_loss
+[rank0]:     outputs = model(**inputs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/qwen2_model.py", line 132, in forward
+[rank0]:     outputs = self.model(
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 854, in forward
+[rank0]:     inputs_embeds = self.embed_tokens(input_ids)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1879, in _call_impl
+[rank0]:     return inner()
+[rank0]:   File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1827, in inner
+[rank0]:     result = forward_call(*args, **kwargs)
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 113, in forward
+[rank0]:     embeddings = self.my_train_sys_emb(input_ids)
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 148, in my_train_sys_emb
+[rank0]:     self.get_change_most_input_ids(w_embeddings.weight.detach(), self.my_word_embeddings.weight.detach())
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 193, in get_change_most_input_ids
+[rank0]:     self.get_change_most_ids(self.label_set, ori_emb_table, cur_emb_table)
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 278, in get_change_most_ids
+[rank0]:     self.evaluation(extra_prompt)
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 452, in evaluation
+[rank0]:     self.code_generate(save_path, extra_prompt, index)
+[rank0]:   File "/root/.cache/huggingface/modules/transformers_modules/Qwen2-7B-Instruct/my_embedding.py", line 491, in code_generate
+[rank0]:     from eval_plus.model import make_model
+[rank0]:   File "/data/zhuldz/self-prompt/self-prompt/eval_plus/model.py", line 4, in <module>
+[rank0]:     import chardet
+[rank0]: ModuleNotFoundError: No module named 'chardet'
+[1;34mwandb[0m: 
+[1;34mwandb[0m: You can sync this run to the cloud by running:
+[1;34mwandb[0m: [1mwandb sync /data/zhuldz/self-prompt/self-prompt/wandb/offline-run-20251120_102336-ihbfjl8k[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/offline-run-20251120_102336-ihbfjl8k/logs[0m
+[rank0]:[W1120 10:26:01.910461834 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+E1120 10:26:02.697000 54619 torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: 1) local_rank: 0 (pid: 54784) of binary: /data/zhuldz/lunwen/lunwen/bin/python
+Traceback (most recent call last):
+  File "/data/zhuldz/lunwen/lunwen/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/run.py", line 901, in main
+    run(args)
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/run.py", line 892, in run
+    elastic_launch(
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 143, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/data/zhuldz/lunwen/lunwen/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 277, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/data/private/self-prompt/self-prompt/train/finetune.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-11-20_10:26:02
+  host      : aimp-notebook-zhuldz-s7rj-0.headless-aimp-notebook-zhuldz-s7rj.app-t-aigc-8cqdt.svc.cluster.local
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 54784)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
