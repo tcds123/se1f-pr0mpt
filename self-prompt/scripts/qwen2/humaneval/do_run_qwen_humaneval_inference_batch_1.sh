@@ -50,9 +50,12 @@ do
     --root outputs \
     --dataset $DATASET \
     --task $TASK \
-    --sys_prompt_index $SYS_PROMPT_INDEX
+    --sys_prompt_index 0 
 
   evalplus.evaluate \
     --dataset $DATASET \
     --samples $SAMPLE_PATH > $RESULT_PATH
 done
+
+
+    #--sys_prompt_index $SYS_PROMPT_INDEX

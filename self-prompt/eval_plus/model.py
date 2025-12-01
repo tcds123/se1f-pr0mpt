@@ -71,7 +71,7 @@ class DecoderBase(ABC):
 
     def get_txt_path(self):
         model_name = self.name.split('/')[-1]
-        txt_path = './txt/' + model_name + '/' + self.dataset + '/'
+        txt_path = './txt/' + model_name.lower() + '/' + self.dataset + '/'
         return txt_path
 
     def get_system_prompt(self, i):
@@ -95,8 +95,15 @@ class GLM(DecoderBase):
 
         self.model = AutoModel.from_pretrained(name, trust_remote_code=True, device=DEVICE)
         self.tokenizer = AutoTokenizer.from_pretrained(name, trust_remote_code=True, device=DEVICE)
+
+        # 1. 无论有值没值，先占个坑，防止 AttributeError
+        self.my_sys_prompt = my_sys_prompt 
+        
+        # 2. 根据是否有值，来决定开关状态（这完美保留了您的判断逻辑）
         if my_sys_prompt:
-            self.my_sys_prompt = my_sys_prompt
+            self.use_my_sys_prompt = True
+        else:
+            self.use_my_sys_prompt = False
 
     def codegen(self, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
         print("********** do_sample: ", do_sample)

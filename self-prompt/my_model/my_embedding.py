@@ -280,16 +280,16 @@ class Embedding(torch.nn.Module):
         if epoch >= 20:
             self.test()
 
-        # if epoch >= self.record_epoch[0]:
-        #     if not os.path.exists('./txt/' + self.model_name):
-        #         os.mkdir('./txt/' + self.model_name)
-        #     if not os.path.exists('./txt/' + self.model_name + '/' + self.dataset_name):
-        #         os.mkdir('./txt/' + self.model_name + '/' + self.dataset_name)
-        #     with open('./txt/' + self.model_name + '/' + self.dataset_name + '/' + str(self.record_epoch[0])+'.txt', 'w', encoding='utf-8') as f:
-        #         for id in should_careful_structure:
-        #             print(self.tokenizer.decode([id]), end=', ', file=f)
-        #     self.record_epoch = self.record_epoch[1:]
-        #     f.close()
+        if epoch >= self.record_epoch[0]:
+            if not os.path.exists('./txt/' + self.model_name):
+                os.mkdir('./txt/' + self.model_name)
+            if not os.path.exists('./txt/' + self.model_name + '/' + self.dataset_name):
+                os.mkdir('./txt/' + self.model_name + '/' + self.dataset_name)
+            with open('./txt/' + self.model_name + '/' + self.dataset_name + '/' + str(self.record_epoch[0])+'.txt', 'w', encoding='utf-8') as f:
+                for id in should_careful_structure:
+                    print(self.tokenizer.decode([id]), end=', ', file=f)
+            self.record_epoch = self.record_epoch[1:]
+            f.close()
 
         print("\n")
 
