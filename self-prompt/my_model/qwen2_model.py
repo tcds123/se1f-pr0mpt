@@ -1,4 +1,7 @@
 import os.path
+import sys
+sys.path.append(os.path.dirname(__file__))
+
 
 from transformers.models.qwen2.modeling_qwen2 import (
     QWEN2_START_DOCSTRING,
@@ -20,7 +23,7 @@ import torch
 import random
 from typing import List, Optional, Tuple, Union
 from transformers.modeling_outputs import CausalLMOutputWithPast
-from my_embedding import Embedding
+from .my_embedding import Embedding
 
 
 
@@ -29,7 +32,7 @@ logger = logging.get_logger(__name__)
 random.seed(42)
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-TOKENIZER = AutoTokenizer.from_pretrained('/data/team/zongwx1/llm_models/qwen2-7b-instruct')
+TOKENIZER = AutoTokenizer.from_pretrained('/data/private/self-prompt/models/Qwen2-7B-Instruct')
 MODEL_NAME = 'qwen2-7b-instruct'
 
 
@@ -88,6 +91,7 @@ class MyQwen2ForCausalLM(Qwen2ForCausalLM):
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
+        **kwargs,
     ) -> Union[Tuple, CausalLMOutputWithPast]:
         r"""
         Args:
@@ -132,6 +136,7 @@ class MyQwen2ForCausalLM(Qwen2ForCausalLM):
             output_attentions=output_attentions,
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
+            **kwargs,
         )
 
         hidden_states = outputs[0]

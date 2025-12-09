@@ -23,7 +23,7 @@ MODEL_MAPPING = {
         "chat": "/data/team/zongwx1/llm_models/chatglm3-6b"
     },
     "qwen2": {
-        "chat": "/data/team/zongwx1/llm_models/qwen2-7b-instruct"
+        "chat": "/data/private/self-prompt/models/Qwen2-7B-Instruct"
     },
     "llama3": {
         "chat": "/data/team/zongwx1/llm_models/llama3-8b-instruct"
@@ -520,8 +520,8 @@ class Embedding(torch.nn.Module):
                 temperature=temperature,
                 my_sys_prompt=extra_prompt,
             )
-            device = torch.device("cuda:1")
-            self.model_runner.model.to(device)
+            #device = torch.device("cuda:1")
+            #self.model_runner.model.to(device)
 
         with torch.no_grad():
             self.codegen(
@@ -638,15 +638,21 @@ class Embedding(torch.nn.Module):
                     n_more_samples -= task2nexist[task_id]
 
                 p.console.print(log)
+                print(f"  → n_more_samples = {n_more_samples}", flush=True)
 
                 sidx = n_samples - n_more_samples
                 while sidx < n_samples:
                     prompt = task["prompt"].strip() + "\n"
                     outputs = model.codegen(
+                        -1,
                         prompt,
                         do_sample=not greedy,
                         num_samples=n_samples - sidx,
                     )
+                    print(f"  → Got {len(outputs)} samples", flush=True)
+                    if not outputs:
+                        print(f"  ❌ EMPTY OUTPUTS! Breaking to avoid deadlock", flush=True)
+                        break  # 防止永久卡死 
                     assert outputs, "No outputs from model!"
                     for impl in outputs:
                         solution = prompt + impl if model.is_direct_completion() else impl
