@@ -239,7 +239,8 @@ class QWEN2(DecoderBase):
         text = self.tokenizer.apply_chat_template(
             messages,
             tokenize=False,
-            add_generation_prompt=add_generation_prompt
+            add_generation_prompt=add_generation_prompt,
+            enable_thinking=False
         )
         if not add_generation_prompt:
             text = text + assistant
