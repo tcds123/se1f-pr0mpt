@@ -2,13 +2,16 @@ import json
 import os
 
 import generate_utils
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, Qwen2Config
 
 
 def generate_sys_prompt(model_name, model, tokenizer, device, dataset_name):
     min_len, max_len = None, None
     if 'glm3' in model_name:
         gen_function = generate_utils.GLM3Generation(model, tokenizer, device).generate
+    elif 'qwen3' in model_name:
+        base_gen_func = generate_utils.QWEN3Generation(model, tokenizer, device).generate
+        gen_function = lambda prompt, do_sample: base_gen_func(prompt, do_sample=do_sample, enable_thinking=False)
     elif 'qwen2' in model_name:
         gen_function = generate_utils.QWEN2Generation(model, tokenizer, device).generate
     elif 'llama3' in model_name:
@@ -83,13 +86,16 @@ def get_response(gen_function, prompt, min_len: int = None, max_len: int = None)
 if __name__ == "__main__":
     # model_path = "/data/team/zongwx1/llm_models/chatglm3-6b"
     # model_path = "/data/team/zongwx1/llm_models/qwen2-7b-instruct"
-    model_path = "/data/public/models/base/Qwen/Qwen2-7B-Instruct"
+    #model_path = "/data/public/models/base/Qwen/Qwen2-7B-Instruct"
+    #model_path = "/data/zhuldz/self-prompt/models/Qwen3-4B"
+    model_path = "/data/zhuldz/self-prompt/models/Qwen3-8B"
     # model_path = "/data/team/zongwx1/llm_models/llama3-8b-instruct"
     # model_path = "/data/team/zongwx1/llm_models/Phi-3-small-8k-instruct"
     # model_path = "/data/team/zongwx1/llm_models/gemma-2-9b-it"
     # model_path = "/data/team/zongwx1/llm_models/Yi-1.5-9B-Chat"
     #model_name = 'glm3'
-    model_name = 'qwen2'
+    #model_name = 'qwen2'
+    model_name = 'qwen3_8b'
     # model_name = 'llama3'
     # model_name = 'phi3'
     # model_name = 'gemma2'
@@ -97,6 +103,13 @@ if __name__ == "__main__":
 
     device = "cuda"  # the device to load the model onto
 
+    # print(f"Loading config manually for {model_name} from {model_path}...")
+    # try:
+    #     config = Qwen2Config.from_pretrained(model_path, trust_remote_code=True)
+    # except Exception as e:
+    #     # 如果 Qwen2Config 失败（极低概率），尝试回退到 AutoConfig 并打印错误
+    #     print(f"Qwen2Config load failed: {e}. Trying AutoConfig...")
+    #     config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
     config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
     # config.auto_map = {
     #     "AutoModelForCausalLM": "qwen2_model.MyQwen2ForCausalLM",
@@ -114,12 +127,13 @@ if __name__ == "__main__":
             model_path,
             config=config,
             torch_dtype="auto",
-            trust_remote_code=True
+            trust_remote_code=True,
+
         )
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 
-    #ataset_name = 'humaneval'
+    #dataset_name = 'humaneval'
     dataset_name = 'mbpp'
     sys_prompt = generate_sys_prompt(model_name, model, tokenizer, device, dataset_name)
     print(sys_prompt)

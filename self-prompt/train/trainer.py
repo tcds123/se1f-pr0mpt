@@ -141,8 +141,15 @@ class PrefixTrainer(Trainer):
             logs["loss"] = round(tr_loss_scalar / (self.state.global_step - self._globalstep_last_logged), 4)
             logs["learning_rate"] = self._get_learning_rate()
 
-            torch.save(logs["loss"], './pt_file/epoch_loss.pt')
-            torch.save(epoch, './pt_file/epoch.pt')
+            raw_model = unwrap_model(model)
+            dataset_name = getattr(raw_model.config, 'dataset_name', 'default')
+            model_name = getattr(raw_model.config, 'model_name_for_pt', 'default')
+            
+            pt_dir = os.path.join('./pt_file', f"{model_name}_{dataset_name}")
+            os.makedirs(pt_dir, exist_ok=True)
+
+            torch.save(logs["loss"], os.path.join(pt_dir, 'epoch_loss.pt'))
+            torch.save(epoch, os.path.join(pt_dir, 'epoch.pt'))
 
             self.my_train_loss_step.append(logs["loss"])
             if self.epoch != epoch:
@@ -201,8 +208,15 @@ class PrefixTrainer(Trainer):
                 logs["grad_norm"] = grad_norm.detach().item() if isinstance(grad_norm, torch.Tensor) else grad_norm
             logs["learning_rate"] = self._get_learning_rate()
 
-            torch.save(logs["loss"], './pt_file/epoch_loss.pt')
-            torch.save(epoch, './pt_file/epoch.pt')
+            raw_model = unwrap_model(model)
+            dataset_name = getattr(raw_model.config, 'dataset_name', 'default')
+            model_name = getattr(raw_model.config, 'model_name_for_pt', 'default')
+            
+            pt_dir = os.path.join('./pt_file', f"{model_name}_{dataset_name}")
+            os.makedirs(pt_dir, exist_ok=True)
+
+            torch.save(logs["loss"], os.path.join(pt_dir, 'epoch_loss.pt'))
+            torch.save(epoch, os.path.join(pt_dir, 'epoch.pt'))
 
             self.my_train_loss_step.append(logs["loss"])
             if self.epoch != epoch:

@@ -97,15 +97,12 @@ class GLM(DecoderBase):
         self.tokenizer = AutoTokenizer.from_pretrained(name, trust_remote_code=True, device=DEVICE)
 
         # 1. 无论有值没值，先占个坑，防止 AttributeError
-        self.my_sys_prompt = my_sys_prompt 
+        self.my_sys_prompt = my_sys_prompt if my_sys_prompt is not None else ""
         
         # 2. 根据是否有值，来决定开关状态（这完美保留了您的判断逻辑）
-        if my_sys_prompt:
-            self.use_my_sys_prompt = True
-        else:
-            self.use_my_sys_prompt = False
+        self.use_my_sys_prompt = True if self.my_sys_prompt else False
 
-    def codegen(self, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
+    def codegen(self, sys_prompt_index: int,prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
         print("********** do_sample: ", do_sample)
         if do_sample:
             assert self.temperature > 0, "Temperature must be greater than 0!"
@@ -145,6 +142,40 @@ class GLM(DecoderBase):
         return response
 
 
+# class QWEN2(DecoderBase):
+#     def __init__(self, name: str, my_sys_prompt: str = None, **kwargs) -> None:
+#         kwargs["direct_completion"] = True
+#         super().__init__(name, **kwargs)
+#         self.eos += ["\n```"]
+
+#         self.model = AutoModelForCausalLM.from_pretrained(name, trust_remote_code=True, device_map="auto")
+#         self.tokenizer = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
+#         if my_sys_prompt:
+#             self.my_sys_prompt = my_sys_prompt
+
+#     def codegen(self, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
+#         print("********** do_sample: ", do_sample)
+#         if do_sample:
+#             assert self.temperature > 0, "Temperature must be greater than 0!"
+
+#         with open('./prompt/system_prompt/qwen2_' + self.dataset.lower() + '.txt', 'r', encoding='utf-8') as f:
+#             sys_prompt = f.read()
+
+#         assistant = "<|im_start|>assistant\n```python"
+#         if self.use_prompt:
+#             if self.use_my_sys_prompt:
+#                 my_sys_prompt = self.my_sys_prompt
+#                 sys_prompt += my_sys_prompt
+#             # prompt = f"Can you complete the following Python function?\n```python\n{prompt}\n```\n"
+
+#             response = self.get_qwen_response(prompt, do_sample=False, sys_prompt=sys_prompt, add_generation_prompt=False, assistant=assistant)
+#         else:
+#             response = self.get_qwen_response(prompt, do_sample=False, add_generation_prompt=False, assistant=assistant)
+
+#         # batch_size = min(self.batch_size, num_samples)
+#         # gen_strs = [x.outputs[0].text.replace("\t", "    ") for x in response]
+#         gen_strs = [response.replace("\t", "    ")]
+#         return gen_strs
 class QWEN2(DecoderBase):
     def __init__(self, name: str, my_sys_prompt: str = None, **kwargs) -> None:
         kwargs["direct_completion"] = True
@@ -153,30 +184,46 @@ class QWEN2(DecoderBase):
 
         self.model = AutoModelForCausalLM.from_pretrained(name, trust_remote_code=True, device_map="auto")
         self.tokenizer = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
-        if my_sys_prompt:
-            self.my_sys_prompt = my_sys_prompt
+        
+        # ✅ 修复1：强制初始化
+        self.my_sys_prompt = my_sys_prompt if my_sys_prompt is not None else ""
+        self.use_my_sys_prompt = True if self.my_sys_prompt else False
 
-    def codegen(self, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
+    # ✅ 修复2：添加 sys_prompt_index 参数
+    def codegen(self, sys_prompt_index: int, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
         print("********** do_sample: ", do_sample)
         if do_sample:
             assert self.temperature > 0, "Temperature must be greater than 0!"
 
-        with open('./prompt/system_prompt/qwen2_' + self.dataset.lower() + '.txt', 'r', encoding='utf-8') as f:
+        # ✅ 修复3：根据 index 读取文件 (可选，如果您需要读取 0.txt)
+        # 注意：需确保 get_txt_path 返回小写路径，或者文件夹本身是大写
+        sys_prompt_path = './prompt/system_prompt/qwen2_' + self.dataset.lower() + '.txt'
+        
+        # 尝试读取对应 index 的 prompt 文件
+        if sys_prompt_index is not None and sys_prompt_index >= 0:
+             # 假设您已经按建议修改了 get_txt_path()
+             indexed_path = self.get_txt_path() + str(sys_prompt_index) + ".txt"
+             if os.path.exists(indexed_path):
+                 print(f"Loading custom prompt from: {indexed_path}")
+                 with open(indexed_path, 'r', encoding='utf-8') as f:
+                     # 这里选择直接覆盖还是拼接，取决于您的需求
+                     # sys_prompt = f.read().strip() 
+                     self.my_sys_prompt = f.read().strip()
+                     self.use_my_sys_prompt = True
+
+        with open(sys_prompt_path, 'r', encoding='utf-8') as f:
             sys_prompt = f.read()
 
         assistant = "<|im_start|>assistant\n```python"
         if self.use_prompt:
             if self.use_my_sys_prompt:
-                my_sys_prompt = self.my_sys_prompt
-                sys_prompt += my_sys_prompt
-            # prompt = f"Can you complete the following Python function?\n```python\n{prompt}\n```\n"
-
+                # 拼接逻辑
+                sys_prompt += self.my_sys_prompt
+            
             response = self.get_qwen_response(prompt, do_sample=False, sys_prompt=sys_prompt, add_generation_prompt=False, assistant=assistant)
         else:
             response = self.get_qwen_response(prompt, do_sample=False, add_generation_prompt=False, assistant=assistant)
 
-        # batch_size = min(self.batch_size, num_samples)
-        # gen_strs = [x.outputs[0].text.replace("\t", "    ") for x in response]
         gen_strs = [response.replace("\t", "    ")]
         return gen_strs
 
@@ -204,6 +251,7 @@ class QWEN2(DecoderBase):
             temperature=self.temperature,
             do_sample=do_sample,
             top_p=0.95 if do_sample else 1.0,
+            top_k=0,
         )
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
@@ -415,7 +463,7 @@ def make_model(
                     my_sys_prompt=my_sys_prompt,
                     dataset=dataset,
         )
-    elif model_type == "qwen2":
+    elif model_type == "qwen2" or model_type == "qwen3":
         return QWEN2(
             batch_size=batch_size,
             name=model_path,

@@ -23,6 +23,9 @@ MODEL_MAPPING = {
     "qwen2": {
         "chat": "/data/public/models/base/Qwen/Qwen2-7B-Instruct"
     },
+    "qwen3": {
+        "chat": "/data/zhuldz/self-prompt/models/Qwen3-4B"
+    },
     "llama3": {
         "chat": "/data/team/zongwx1/llm_models/llama3-8b-instruct"
     },

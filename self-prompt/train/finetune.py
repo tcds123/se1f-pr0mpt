@@ -142,6 +142,7 @@ def main():
     config.extra_len = extra_len
     config.train_mode = True
     config.dataset_name = data_args.dataset_name
+    config.model_name_for_pt = model_args.model_name
     model_name = model_args.model_name
 
     # model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
@@ -263,6 +264,39 @@ def main():
             add_generation_prompt=False,
             sp_token_num=sp_token_num,
         )
+    elif model_name == 'qwen3_8b':
+        # 假设 Qwen3 的特殊 token 数量策略与 Qwen2 一致
+        sp_token_num = (2, 1) 
+        config.sp_token_num = sp_token_num
+        
+        # 这里的 key 对应你新建的 qwen3_model.py 文件名和其中的类名
+        config.auto_map = {
+            "AutoModelForCausalLM": "qwen3_model.MyQwen3ForCausalLM", 
+        }
+        
+        model = AutoModelForCausalLM.from_pretrained(
+            model_args.model_path,
+            config=config,
+            torch_dtype="auto",
+            trust_remote_code=True
+        )
+        
+        # 复用 Qwen2Dataset，通常数据处理逻辑兼容
+        train_dataset = Qwen2Dataset(
+            data=train_data,
+            dataset_name=data_args.dataset_name,
+            device=model.device,
+            tokenizer=tokenizer,
+            max_source_length=data_args.max_source_length,
+            max_target_length=data_args.max_target_length,
+            sys_prompt=sys_prompt,
+            sys_prompt_len=sys_prompt_len,
+            extra_len=extra_len,
+            prompt_template=prompt_template,
+            add_generation_prompt=False,
+            sp_token_num=sp_token_num,
+        )
+    # =============== 新增以上代码 (End) ===============
     elif model_name == 'llama3':
         sp_token_num = (5, 1)
         config.sp_token_num = sp_token_num

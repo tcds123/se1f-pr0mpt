@@ -30,6 +30,38 @@ class GLM3Generation(BaseGeneration):
         return response
 
 
+class QWEN3Generation(BaseGeneration):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def generate(self, prompt: str, sys_prompt="You are a helpful assistant.", do_sample=False,**kwargs):
+        messages = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": prompt}
+        ]
+        enable_thinking = kwargs.get('enable_thinking', True)
+        text = self.tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=enable_thinking
+        )
+        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
+
+        generated_ids = self.model.generate(
+            **model_inputs,
+            max_new_tokens=512,
+            do_sample=do_sample,
+            top_k=0
+        )
+        generated_ids = [
+            output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+        ]
+
+        response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+
+        return response
+
 class QWEN2Generation(BaseGeneration):
     def __init__(self, *args):
         super().__init__(*args)
@@ -58,7 +90,6 @@ class QWEN2Generation(BaseGeneration):
         response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
 
         return response
-
 
 class LLAMA3Generation(BaseGeneration):
     def __init__(self, *args):
