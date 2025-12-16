@@ -47,7 +47,7 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 sys.path.append('./my_model')
-
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 TRAIN_EVAL_PER = [0.6, 0.2, 0.2]
 
@@ -150,6 +150,11 @@ def main():
     with open(data_args.train_file, "r", encoding="utf-8") as f:
         if data_args.train_file.endswith(".json"):
             data = json.load(f)
+            if isinstance(data, dict):
+                print("Detected dictionary format, converting to list...")
+                # 确保 task_id 没丢，如果原始数据里没有 task_id 字段，这里可能需要特殊处理
+                data = list(data.values())
+                
         elif data_args.train_file.endswith(".jsonl"):
             data = [json.loads(line) for line in f]
 
@@ -177,27 +182,76 @@ def main():
         with open(test_path, "w", encoding="utf-8") as f:
             json.dump(test_index, f)
     elif data_args.dataset_name == "mbpp":
-        train_data = data
-        train_num = [601, 975]
-        val_num = [511, 601]
-        test_num = [11, 511]
+        # 1. 随机打乱数据 (确保每次划分都是随机且均匀的，依赖于种子)
+        # 如果不想每次变动，random.seed 已经在 main 开头设置过了
+        random.shuffle(data)
 
-        val_index = dict()
-        test_index = dict()
-        val_index["index"] = []
-        test_index["index"] = []
-        for i in range(val_num[0], val_num[1]):
-            val_index["index"].append("Mbpp/" + str(i))
-        for i in range(test_num[0], test_num[1]):
-            test_index["index"].append("Mbpp/" + str(i))
+        # 2. 计算切分数量 (6:2:2)
+        total_len = len(data)
+        train_count = int(total_len * 0.6)  # 60% 训练
+        test_count = int(total_len * 0.2)   # 20% 测试
+        val_count = total_len - train_count - test_count # 剩下的 20% 验证
 
+        # 3. 切分列表
+        train_split = data[:train_count]
+        test_split = data[train_count : train_count + test_count]
+        val_split = data[train_count + test_count :]
+
+        # 4. 指定当前训练使用的数据
+        train_data = train_split
+
+        # 5. 生成验证集和测试集的索引文件 (val.jsonl, test.jsonl)
+        # 注意：这里假设你的数据项中包含 'task_id' 字段，格式如 11, 12...
+        val_index = {"index": []}
+        test_index = {"index": []}
+
+        for item in val_split:
+            # 兼容处理：确保 task_id 格式正确拼接到 "Mbpp/" 后面
+            tid = item.get('task_id')
+            if "Mbpp/" in tid:
+                val_index["index"].append(tid)
+            else:
+                val_index["index"].append(f"Mbpp/{tid}")
+
+        for item in test_split:
+            tid = item.get('task_id')
+            if "Mbpp/" in tid:
+                test_index["index"].append(tid)
+            else:
+                test_index["index"].append(f"Mbpp/{tid}")
+
+        # 6. 保存索引文件路径
         val_path = data_args.train_file.split('train.jsonl')[0] + 'val.jsonl'
         test_path = data_args.train_file.split('train.jsonl')[0] + 'test.jsonl'
 
+        # 写入文件
         with open(val_path, "w", encoding="utf-8") as f:
             json.dump(val_index, f)
         with open(test_path, "w", encoding="utf-8") as f:
             json.dump(test_index, f)
+            
+        print(f"Dataset split (MBPP): Total={total_len}, Train={len(train_data)}, Test={len(test_index['index'])}, Val={len(val_index['index'])}")
+        # train_data = data
+        # train_num = [601, 975]
+        # val_num = [511, 601]
+        # test_num = [11, 511]
+
+        # val_index = dict()
+        # test_index = dict()
+        # val_index["index"] = []
+        # test_index["index"] = []
+        # for i in range(val_num[0], val_num[1]):
+        #     val_index["index"].append("Mbpp/" + str(i))
+        # for i in range(test_num[0], test_num[1]):
+        #     test_index["index"].append("Mbpp/" + str(i))
+
+        # val_path = data_args.train_file.split('train.jsonl')[0] + 'val.jsonl'
+        # test_path = data_args.train_file.split('train.jsonl')[0] + 'test.jsonl'
+
+        # with open(val_path, "w", encoding="utf-8") as f:
+        #     json.dump(val_index, f)
+        # with open(test_path, "w", encoding="utf-8") as f:
+        #     json.dump(test_index, f)
     config.val_path = val_path
     config.test_path = test_path
 
@@ -264,12 +318,10 @@ def main():
             add_generation_prompt=False,
             sp_token_num=sp_token_num,
         )
-    elif model_name == 'qwen3_8b':
-        # 假设 Qwen3 的特殊 token 数量策略与 Qwen2 一致
+    elif model_name == 'qwen3_8b' or model_name == 'qwen3_4b':
         sp_token_num = (2, 1) 
         config.sp_token_num = sp_token_num
         
-        # 这里的 key 对应你新建的 qwen3_model.py 文件名和其中的类名
         config.auto_map = {
             "AutoModelForCausalLM": "qwen3_model.MyQwen3ForCausalLM", 
         }

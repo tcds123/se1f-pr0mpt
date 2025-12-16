@@ -187,7 +187,7 @@ class PrefixTrainer(Trainer):
                 self.lr_scheduler.step(metrics[metric_to_check])
 
         if self.control.should_save:
-            self._save_checkpoint(model, trial, metrics=metrics)
+            self._save_checkpoint(model, trial)
             self.control = self.callback_handler.on_save(self.args, self.state, self.control)
 
     def _maybe_log_save_evaluate_new(self, tr_loss, grad_norm, model, trial, epoch, ignore_keys_for_eval=None,*args,**kwargs):
@@ -244,5 +244,5 @@ class PrefixTrainer(Trainer):
                 self.lr_scheduler.step(metrics[metric_to_check])
 
         if self.control.should_save:
-            self._save_checkpoint(model, trial, metrics=metrics)
+            self._save_checkpoint(model, trial)
             self.control = self.callback_handler.on_save(self.args, self.state, self.control)

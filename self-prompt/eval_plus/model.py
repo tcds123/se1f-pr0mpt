@@ -197,7 +197,9 @@ class QWEN2(DecoderBase):
 
         # ✅ 修复3：根据 index 读取文件 (可选，如果您需要读取 0.txt)
         # 注意：需确保 get_txt_path 返回小写路径，或者文件夹本身是大写
-        sys_prompt_path = './prompt/system_prompt/qwen2_' + self.dataset.lower() + '.txt'
+        #sys_prompt_path = './prompt/system_prompt/qwen2_' + self.dataset.lower() + '.txt'
+        sys_prompt_path = '/data/zhuldz/self-prompt/self-prompt/prompt/system_prompt/qwen3_4b_mbpp.txt'
+        
         
         # 尝试读取对应 index 的 prompt 文件
         if sys_prompt_index is not None and sys_prompt_index >= 0:
@@ -464,7 +466,7 @@ def make_model(
                     my_sys_prompt=my_sys_prompt,
                     dataset=dataset,
         )
-    elif model_type == "qwen2" or model_type == "qwen3":
+    elif model_type == "qwen2" or model_type == "qwen3_4b" or model_type == "qwen3_8b":
         return QWEN2(
             batch_size=batch_size,
             name=model_path,

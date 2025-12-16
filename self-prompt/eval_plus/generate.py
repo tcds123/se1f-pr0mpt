@@ -14,6 +14,7 @@ from rich.progress import (
     TimeElapsedColumn,
 )
 
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 MODEL_MAPPING = {
     #  Can be either repo's name or /path/to/model
@@ -23,7 +24,7 @@ MODEL_MAPPING = {
     "qwen2": {
         "chat": "/data/public/models/base/Qwen/Qwen2-7B-Instruct"
     },
-    "qwen3": {
+    "qwen3_4b": {
         "chat": "/data/zhuldz/self-prompt/models/Qwen3-4B"
     },
     "llama3": {
@@ -84,9 +85,72 @@ def code_generate(args,
 
             dataset = get_human_eval_plus()
         elif args.dataset == "mbpp":
-            from evalplus.data import get_mbpp_plus
+            # ================= [修改后：手动加载本地 MBPP+ (已解压 .jsonl 版)] =================
+                import json
+                import os
+                
+                # 请确认文件名是否正确，例如 MbppPlus.jsonl
+                local_mbpp_path = "/data/zhuldz/self-prompt/self-prompt/data/MbppPlus.jsonl" 
+                
+                print(f"📂 Loading local MBPP+ dataset from {local_mbpp_path} ...")
+                dataset = {}
+                
+                # 2. 修改读取方式：使用标准 open，模式为 'r' (read)，指定 utf-8 编码
+                # 不需要 import gzip，也不需要 gzip.open
+                with open(local_mbpp_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        # 增加一个判断防止空行报错
+                        if not line.strip(): 
+                            continue
+                            
+                        item = json.loads(line)
+                        # 将 JSONL 转换为 {task_id: item} 的字典格式
+                        dataset[item['task_id']] = item
+                        
+                print(f"✅ Loaded {len(dataset)} tasks locally.")
+            # dataset = {}
+            # local_file_path = "/data/zhuldz/self-prompt/self-prompt/data/train_full_fixed.jsonl"
+            # print(f"Loading local MBPP data DIRECTLY from {local_file_path}...")
+                
+            # if not os.path.exists(local_file_path):
+            #     # 如果文件不存在，这里手动抛出异常以免后面报错
+            #     print(f"Error: File not found {local_file_path}")
+            #     dataset = {} # 保持为空，或者在这里 return
+            # else:
+            #     try: 
+            #         with open(local_file_path, 'r', encoding='utf-8') as f:
+            #             for line in f:
+            #                 line = line.strip()
+            #                 if not line: continue
+            #                 try:
+            #                     item = json.loads(line)
+                                
+            #                     # 获取 task_id
+            #                     task_id = item.get('task_id')
+            #                     if task_id is None: continue
+                                
+            #                     # 构造 key
+            #                     if isinstance(task_id, int):
+            #                         key = f"Mbpp/{task_id}"
+            #                     else:
+            #                         key = str(task_id) if "Mbpp" in str(task_id) else f"Mbpp/{task_id}"
 
-            dataset = get_mbpp_plus()
+
+            #                     # 补全 contract
+            #                     if 'contract' not in item:
+            #                         item['contract'] = ""
+
+            #                     # 【关键】现在 dataset 是字典了，这行代码才能跑通
+            #                     dataset[key] = item
+                                
+            #                 except json.JSONDecodeError:
+            #                     continue
+            #     except Exception as e:
+            #         print(f"Error loading file: {e}")
+            
+            # from evalplus.data import get_mbpp_plus
+            # dataset = get_mbpp_plus()
+            
 
         if specified_data is not None:
             print(f"Load index from specified_data from {specified_data}")
@@ -137,10 +201,20 @@ def code_generate(args,
                 print("ori_outputs: ", outputs)
 
                 if args.dataset == "humaneval":
-                    outputs = postprocess(model, outputs, args.dataset)
+                    if 'qwen' in model.name.lower():
+                        # 直接调用正则提取函数，传入 task["entry_point"]
+                        # 注意：这里假设 outputs 是列表，取第一个元素处理后再放回列表
+                        outputs = [qwen_humaneval_post_process(outputs[0], task["entry_point"])]
+                    else:
+                        outputs = postprocess(model, outputs, args.dataset)
+                    # outputs = postprocess(model, outputs, args.dataset)
                     # outputs = [qwen_humaneval_post_process(outputs[0], task["entry_point"])]  # qwen2
                 elif args.dataset == "mbpp":
-                    outputs = postprocess(model, outputs, args.dataset)
+                    if 'qwen' in model.name.lower():
+                        outputs = [qwen_humaneval_post_process(outputs[0], task["entry_point"])]
+                    else:
+                        outputs = postprocess(model, outputs, args.dataset)
+                    # outputs = postprocess(model, outputs, args.dataset)
                 print("outputs: ", outputs)
 
                 assert outputs, "No outputs from model!"
