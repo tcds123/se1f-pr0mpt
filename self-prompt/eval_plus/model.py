@@ -255,6 +255,7 @@ class QWEN2(DecoderBase):
             do_sample=do_sample,
             top_p=0.95 if do_sample else 1.0,
             top_k=0,
+            repetition_penalty=1.2,
         )
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)

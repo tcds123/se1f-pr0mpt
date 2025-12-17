@@ -1,18 +1,21 @@
 #!/bin/bash
 
 # 1. 创建结果存放目录
-mkdir -p results/mbpp
+mkdir -p results/humaneval
 
 # 2. 定义变量
-MODEL_TYPE="qwen3_4b"   # 对应 generate.py 中 MODEL_MAPPING 的一级 key
+MODEL_TYPE="qwen3_8b"   # 对应 generate.py 中 MODEL_MAPPING 的一级 key
 MODEL_SIZE="chat"       # 对应 generate.py 中 MODEL_MAPPING 的二级 key
-DATASET="mbpp"
+DATASET="humaneval"
 
-export VLLM_N_GPUS=1 
+
+export VLLM_N_GPUS=4 
 
 
 echo "Running generation for $MODEL_TYPE $MODEL_SIZE on $DATASET..."
 
+# 3. 运行代码生成
+# 注意：输出路径会自动生成为 outputs/humaneval/qwen3_4b_task_None_...
 python ./generate.py \
   --model_type $MODEL_TYPE \
   --model_size $MODEL_SIZE \
@@ -34,7 +37,8 @@ GEN_OUTPUT_DIR="outputs/${DATASET}/${MODEL_TYPE}_task_None"
 
 echo "Evaluating results from $GEN_OUTPUT_DIR..."
 
-python3 run_eval_offline.py \
+evalplus.evaluate \
   --dataset $DATASET \
   --samples $GEN_OUTPUT_DIR > results/${DATASET}/${MODEL_TYPE}_${MODEL_SIZE}.txt
 
+echo "Done! Results saved to results/${DATASET}/${MODEL_TYPE}_${MODEL_SIZE}.txt"

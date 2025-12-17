@@ -27,6 +27,9 @@ MODEL_MAPPING = {
     "qwen3_4b": {
         "chat": "/data/zhuldz/self-prompt/models/Qwen3-4B"
     },
+    "qwen3_8b": {
+        "chat": "/data/zhuldz/self-prompt/models/Qwen3-8B"
+    },
     "llama3": {
         "chat": "/data/team/zongwx1/llm_models/llama3-8b-instruct"
     },
@@ -280,40 +283,47 @@ def qwen_humaneval_post_process(text, entry_point):
 
 def qwen_mbpp_post_process(text):
     """
-    针对 MBPP 数据集的改进版后处理：
-    1. 优先提取 Markdown ```python 代码块
-    2. 如果没有 Markdown，尝试提取包含 def 的完整代码段
+    修复版后处理：保留 import/from 语句，并提取完整代码块
     """
-    # 策略 1: 提取 Markdown 代码块 (最稳健，适合 Chat 模型)
-    if "```python" in text:
-        try:
-            # 取 ```python 之后的内容
-            code = text.split("```python")[1]
-            # 取下一个 ``` 之前的内容
-            if "```" in code:
-                code = code.split("```")[0]
-            return code.strip()
-        except IndexError:
-            pass
-    elif "```" in text:
-        try:
-            # 处理只写了 ``` 而没写 python 的情况
-            code = text.split("```")[1]
-            if "```" in code:
-                code = code.split("```")[0]
-            return code.strip()
-        except IndexError:
-            pass
+    text = text.strip()
+    
+    # 1. 优先提取 Markdown 代码块 (Chat 模型)
+    if text.startswith("```"):
+        if text.startswith("```python"):
+            text = text[9:]
+        elif text.startswith("```"):
+            text = text[3:]
+        if "```" in text:
+            text = text.split("```")[0]
+        return text.strip()
+    
+    if "```" in text:
+        text = text.split("```")[0]
+        return text.strip()
 
-    # 策略 2: 如果没有 Markdown，回退到正则提取 (适合 Base 模型)
-    # 注意：这里修改了正则，使其包含 'def ...:' 头部，而不只是提取 body
-    # 寻找从 'def' 开始，直到遇到非缩进行的内容
-    match = re.search(r"(def\s+.*?:.+?)(?:\n(?!\n*(?:  |\t))|$)", text, re.DOTALL)
-    if match:
-        return match.group(1)
+    # 2. 针对 Base 模型：提取包含 imports 的代码块
+    # 逻辑：找到第一个以 import, from 或 def 开头的行，作为代码起始
+    lines = text.split('\n')
+    start_index = -1
+    
+    for i, line in enumerate(lines):
+        line_strip = line.strip()
+        # 寻找代码的起始特征
+        if line_strip.startswith("def ") or \
+           line_strip.startswith("import ") or \
+           line_strip.startswith("from ") or \
+           line_strip.startswith("@"): # 装饰器
+            start_index = i
+            break
+            
+    if start_index != -1:
+        # 简单的截断策略：从代码开始处截取到文本结束
+        # (通常 Base 模型生成完代码后会停止，或者接新的 task_id，或者输出解释)
+        # 为了更安全，可以保留原有的 indentation 截断逻辑作为辅助，但在 import 场景下较难通用
+        # 这里建议直接返回从 start_index 开始的所有内容，EvalPlus 运行时的容错性通常能处理末尾的杂音
+        return "\n".join(lines[start_index:]).strip()
 
-    # 兜底：如果什么都没匹配到，假设整个文本就是代码 (Base模型常见)
-    return text.strip()
+    return text
 
 # def qwen_mbpp_post_process(text):
 #     # 正则表达式匹配代码块

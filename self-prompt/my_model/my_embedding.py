@@ -1,5 +1,6 @@
 import os.path
-
+import os
+import re
 from transformers import AutoTokenizer
 from transformers.utils import logging
 import torch
@@ -9,7 +10,16 @@ import random
 import json
 import sys
 
+# ==================== [新增：自动修复环境变量] ====================
+# 强制去掉代理设置中可能存在的错误引号 (")，解决 '8080"' 报错
+for key in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY']:
+    if key in os.environ:
+        os.environ[key] = os.environ[key].replace('"', '')
+        print(f"Fixed env var {key}: {os.environ[key]}")
+
 logger = logging.get_logger(__name__)
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # torch.manual_seed(42)
 # torch.cuda.manual_seed(42)
@@ -24,6 +34,12 @@ MODEL_MAPPING = {
     },
     "qwen2": {
         "chat": "/data/private/self-prompt/models/Qwen2-7B-Instruct"
+    },
+    "qwen3_4b": {
+        "chat": "/data/private/self-prompt/models/Qwen3-4B"  
+    },
+    "qwen3_8b": {
+        "chat": "/data/private/self-prompt/models/Qwen3-8B"  
     },
     "llama3": {
         "chat": "/data/team/zongwx1/llm_models/llama3-8b-instruct"
@@ -49,6 +65,15 @@ class Embedding(torch.nn.Module):
         self.torch_dtype = config.torch_dtype
         self.tokenizer = tokenizer
         self.model_name = model_name
+
+        self.dataset_name = getattr(config, 'dataset_name', 'default')
+        config_model_name = getattr(config, 'model_name_for_pt', model_name)
+        self.pt_dir = os.path.join('./pt_file', f"{config_model_name}_{self.dataset_name}")
+        if not os.path.exists(self.pt_dir):
+            try:
+                os.makedirs(self.pt_dir, exist_ok=True)
+            except Exception as e:
+                print(f"Warning: Failed to create dir {self.pt_dir}: {e}")
 
         self.is_train_sys_prompt_mode = False
         if hasattr(config, 'step'):
@@ -126,7 +151,7 @@ class Embedding(torch.nn.Module):
                 sys_tensor = torch.cat((sys_tensor, input_ids[:, self.skip_num_front:self.skip_num_front + self.skip_num_back]),dim=1)
             sys_emb = self.my_word_embeddings(sys_tensor)
         else:
-            prompt_len = torch.load('./pt_file/prompt_len.pt')
+            prompt_len = torch.load(os.path.join(self.pt_dir, 'prompt_len.pt'), weights_only=False)
             len_input = prompt_len - self.sp_token_num - self.sys_prompt_len[0] - self.sys_prompt_len[1] - self.extra_len
             input_embedding_front = w_embeddings(input_ids[:, self.sp_token_num + self.sys_prompt_len[0]:self.sp_token_num + self.sys_prompt_len[0] + len_input])
             input_embedding_back = w_embeddings(input_ids[:, prompt_len:])
@@ -224,7 +249,7 @@ class Embedding(torch.nn.Module):
             else:
                 new_sum_diff_emb_dict[ids] = sum_diff_emb_table[ids]
         if check_loss_dir:
-            cur_loss = torch.load('./pt_file/epoch_loss.pt')
+            cur_loss = torch.load(os.path.join(self.pt_dir, 'epoch_loss.pt'), weights_only=False)
             if self.pre_loss is None:
                 self.pre_loss = cur_loss
             else:
@@ -303,12 +328,26 @@ class Embedding(torch.nn.Module):
             self.should_careful_dict[epoch] += max_indices
 
     def get_epoch(self):
-        epoch = torch.load('./pt_file/epoch.pt')
+        epoch = torch.load(os.path.join(self.pt_dir, 'epoch.pt'),weights_only=False)
         return epoch
 
     def get_shift_labels(self):
-        shift_labels = torch.load('./pt_file/shift_labels.pt')
-        torch.save(None, './pt_file/shift_labels.pt')
+        # 使用专属目录路径
+        file_path = os.path.join(self.pt_dir, 'shift_labels.pt')
+        
+        # 加入重试逻辑防止 EOFError
+        import time
+        shift_labels = None
+        for _ in range(10): # 重试 10 次
+            try:
+                if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+                    shift_labels = torch.load(file_path, map_location=self.device,weights_only=False)
+                    # 读取后清空或标记，避免重复读取（原逻辑是保存 None）
+                    torch.save(None, file_path) 
+                    break
+            except Exception:
+                time.sleep(0.05)
+
         if shift_labels is not None:
             clean_shift_labels_list = []
             shift_labels_list = shift_labels[0].tolist()
@@ -320,7 +359,7 @@ class Embedding(torch.nn.Module):
         return shift_labels
 
     def save_pt(self, value, name):
-        torch.save(value, './pt_file/' + name + '.pt')
+        torch.save(value, os.path.join(self.pt_dir, name + '.pt'))
 
     def print_input_ids(self, emb, w_emb):
         if not self.sys_prompt_is_list:
@@ -352,7 +391,7 @@ class Embedding(torch.nn.Module):
             should_skip_len = self.sp_token_num[0] + self.sp_token_num[1] + self.sys_prompt_len + self.extra_len
             input_ids = input_ids[:, should_skip_len:]
         else:
-            prompt_len = torch.load('./pt_file/prompt_len.pt')
+            prompt_len = torch.load(os.path.join(self.pt_dir, 'prompt_len.pt'), weights_only=False)
             len_input = prompt_len - self.sp_token_num - self.sys_prompt_len[0] - self.sys_prompt_len[1] - self.extra_len
             input_ids = input_ids[:, self.sp_token_num + self.sys_prompt_len[0]:self.sp_token_num + self.sys_prompt_len[0]+len_input]
 
@@ -368,6 +407,9 @@ class Embedding(torch.nn.Module):
         for sample_id in sample_ids:
             decoded_sample_id = self.tokenizer.decode(sample_id.tolist())
             sample_ids_list.append(decoded_sample_id)
+        dir_path = './txt/' + self.model_name + '/' + self.dataset_name
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path, exist_ok=True)
         print("**************** extra_ids: ", sample_ids_list)
         extra_ids = torch.LongTensor(sample_ids).unsqueeze(0)
         with open('./txt/' + self.model_name + '/' + self.dataset_name + '/extra_ids.txt', 'w',
@@ -497,7 +539,11 @@ class Embedding(torch.nn.Module):
 
         if "glm" in self.model_name.lower():
             model_type = "glm3"
-        elif "qwen" in self.model_name.lower():
+        elif "qwen3_4b" in self.model_name.lower():
+            model_type = "qwen3_4b"
+        elif "qwen3_8b" in self.model_name.lower():
+            model_type = "qwen3_8b"
+        elif "qwen2" in self.model_name.lower():
             model_type = "qwen2"
         elif "llama" in self.model_name.lower():
             model_type = "llama3"
@@ -545,6 +591,7 @@ class Embedding(torch.nn.Module):
                 id_range=None,
                 version="default",
                 resume=False,):
+        import json
         from evalplus.data import (
             get_human_eval_plus,
             get_mbpp_plus,
@@ -600,6 +647,69 @@ class Embedding(torch.nn.Module):
                 dataset = get_human_eval_plus(version=version)
             elif dataset == "mbpp":
                 dataset = get_mbpp_plus(version=version)
+                import json
+                # 保存路径设为 outputs 目录下，方便查找
+                debug_keys_path = "./outputs/mbpp_plus_keys_debug.json" 
+                full_debug_path = "./outputs/mbpp_plus_full_debug.json" 
+                print(f"🔍 DEBUG: Saving MBPP+ keys to {debug_keys_path} ...")
+                try:
+                    # 直接保存整个字典内容
+                    with open(full_debug_path, "w", encoding='utf-8') as f:
+                        json.dump(dataset, f, indent=4, default=str) # default=str 防止有些对象无法序列化
+                    print("✅ Full dataset saved.")
+
+                except Exception as e:
+                    print(f"⚠️ Failed to save debug info: {e}")
+                # ==================== [新增代码开始] ====================
+                # dataset = {}
+                # import os
+                # local_file_path = "/data/zhuldz/self-prompt/self-prompt/data/train_full_fixed.jsonl"
+                
+                # print(f"Loading local MBPP data DIRECTLY from {local_file_path}...")
+                
+                # if not os.path.exists(local_file_path):
+                #     # 如果文件不存在，这里手动抛出异常以免后面报错
+                #     print(f"Error: File not found {local_file_path}")
+                #     dataset = {} # 保持为空，或者在这里 return
+                # else:
+                #     try: 
+                #         with open(local_file_path, 'r', encoding='utf-8') as f:
+                #             for line in f:
+                #                 line = line.strip()
+                #                 if not line: continue
+                #                 try:
+                #                     item = json.loads(line)
+                                    
+                #                     # 获取 task_id
+                #                     task_id = item.get('task_id')
+                #                     if task_id is None: continue
+                                    
+                #                     # 构造 key
+                #                     if isinstance(task_id, int):
+                #                         key = f"Mbpp/{task_id}"
+                #                     else:
+                #                         key = str(task_id) if "Mbpp" in str(task_id) else f"Mbpp/{task_id}"
+
+                #                     # 补全 entry_point
+                #                     if 'entry_point' not in item:
+                #                         code_content = item.get('response', item.get('code', ''))
+                #                         match = re.search(r'def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code_content)
+                #                         if match:
+                #                             item['entry_point'] = match.group(1)
+                #                         else:
+                #                             item['entry_point'] = "solution"
+                                    
+                #                     # 补全 contract
+                #                     if 'contract' not in item:
+                #                         item['contract'] = ""
+
+                #                     dataset[key] = item
+                                    
+                #                 except json.JSONDecodeError:
+                #                     continue
+                #     except Exception as e:
+                #         print(f"Error loading file: {e}")
+                # # ==================== [新增代码结束] ====================
             elif dataset == "evalperf":
                 original_dataset = {**get_human_eval_plus(), **get_mbpp_plus()}
                 dataset = {k: original_dataset[k] for k in get_evalperf_data()}
