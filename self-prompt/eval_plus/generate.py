@@ -211,7 +211,7 @@ def code_generate(args,
                     # outputs = [qwen_humaneval_post_process(outputs[0], task["entry_point"])]  # qwen2
                 elif args.dataset == "mbpp":
                     if 'qwen' in model.name.lower():
-                        outputs = [qwen_humaneval_post_process(outputs[0], task["entry_point"])]
+                        outputs = [qwen_mbpp_post_process(outputs[0])]
                     else:
                         outputs = postprocess(model, outputs, args.dataset)
                     # outputs = postprocess(model, outputs, args.dataset)
@@ -279,17 +279,54 @@ def qwen_humaneval_post_process(text, entry_point):
 
 
 def qwen_mbpp_post_process(text):
-    # 正则表达式匹配代码块
-    code_block_pattern = re.compile(
-        r"def.*?:\n(.*?)(?:\n(?!\n*(?:  |\t))|$)", re.DOTALL
-    )
-    code_block = code_block_pattern.search(text)
+    """
+    针对 MBPP 数据集的改进版后处理：
+    1. 优先提取 Markdown ```python 代码块
+    2. 如果没有 Markdown，尝试提取包含 def 的完整代码段
+    """
+    # 策略 1: 提取 Markdown 代码块 (最稳健，适合 Chat 模型)
+    if "```python" in text:
+        try:
+            # 取 ```python 之后的内容
+            code = text.split("```python")[1]
+            # 取下一个 ``` 之前的内容
+            if "```" in code:
+                code = code.split("```")[0]
+            return code.strip()
+        except IndexError:
+            pass
+    elif "```" in text:
+        try:
+            # 处理只写了 ``` 而没写 python 的情况
+            code = text.split("```")[1]
+            if "```" in code:
+                code = code.split("```")[0]
+            return code.strip()
+        except IndexError:
+            pass
 
-    if code_block is not None:
-        return code_block.group(1)
+    # 策略 2: 如果没有 Markdown，回退到正则提取 (适合 Base 模型)
+    # 注意：这里修改了正则，使其包含 'def ...:' 头部，而不只是提取 body
+    # 寻找从 'def' 开始，直到遇到非缩进行的内容
+    match = re.search(r"(def\s+.*?:.+?)(?:\n(?!\n*(?:  |\t))|$)", text, re.DOTALL)
+    if match:
+        return match.group(1)
 
-    # if no code block is found, assume the LM is simply filling the code
-    return textwrap.indent(text, " " * 4)
+    # 兜底：如果什么都没匹配到，假设整个文本就是代码 (Base模型常见)
+    return text.strip()
+
+# def qwen_mbpp_post_process(text):
+#     # 正则表达式匹配代码块
+#     code_block_pattern = re.compile(
+#         r"def.*?:\n(.*?)(?:\n(?!\n*(?:  |\t))|$)", re.DOTALL
+#     )
+#     code_block = code_block_pattern.search(text)
+
+#     if code_block is not None:
+#         return code_block.group(1)
+
+#     # if no code block is found, assume the LM is simply filling the code
+#     return textwrap.indent(text, " " * 4)
 
 
 def base_post_process(outputs):

@@ -13,11 +13,6 @@ export VLLM_N_GPUS=1
 
 echo "Running generation for $MODEL_TYPE $MODEL_SIZE on $DATASET..."
 
-unset http_proxy
-unset https_proxy
-unset HTTP_PROXY
-unset HTTPS_PROXY
-
 python ./generate.py \
   --model_type $MODEL_TYPE \
   --model_size $MODEL_SIZE \
@@ -43,4 +38,3 @@ evalplus.evaluate \
   --dataset $DATASET \
   --samples $GEN_OUTPUT_DIR > results/${DATASET}/${MODEL_TYPE}_${MODEL_SIZE}.txt
 
-echo "Done! Results saved to results/${DATASET}/${MODEL_TYPE}_${MODEL_SIZE}.txt"
