@@ -70,8 +70,8 @@ class DecoderBase(ABC):
         return self.name
 
     def get_txt_path(self):
-        model_name = self.name.split('/')[-1]
-        txt_path = './txt/' + model_name.lower() + '/' + self.dataset + '/'
+        model_name = self.name.split('/')[-1].lower().replace('-', '_')
+        txt_path = './txt/' + model_name + '/' + self.dataset + '/'
         return txt_path
 
     def get_system_prompt(self, i):
@@ -177,7 +177,8 @@ class GLM(DecoderBase):
 #         gen_strs = [response.replace("\t", "    ")]
 #         return gen_strs
 class QWEN2(DecoderBase):
-    def __init__(self, name: str, my_sys_prompt: str = None, **kwargs) -> None:
+    def __init__(self, name: str, my_sys_prompt: str = None, model_type: str = "qwen2", **kwargs) -> None:
+        self.model_type = model_type
         kwargs["direct_completion"] = True
         super().__init__(name, **kwargs)
         self.eos += ["\n```"]
@@ -191,40 +192,88 @@ class QWEN2(DecoderBase):
 
     # ✅ 修复2：添加 sys_prompt_index 参数
     def codegen(self, sys_prompt_index: int, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
+        # 必须导入 os
+        import os 
+
         print("********** do_sample: ", do_sample)
         if do_sample:
             assert self.temperature > 0, "Temperature must be greater than 0!"
 
-        # ✅ 修复3：根据 index 读取文件 (可选，如果您需要读取 0.txt)
-        # 注意：需确保 get_txt_path 返回小写路径，或者文件夹本身是大写
-        #sys_prompt_path = './prompt/system_prompt/qwen2_' + self.dataset.lower() + '.txt'
-        sys_prompt_path = '/data/zhuldz/self-prompt/self-prompt/prompt/system_prompt/qwen3_4b_mbpp.txt'
+        # =======================================================
+        # 1. 动态构建主系统提示词路径 (绝对路径)
+        # =======================================================
+        current_file_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_file_dir) # 回退到 self-prompt 根目录
         
+        prompt_dir = os.path.join(project_root, "prompt", "system_prompt")
+        filename = f"{self.model_type}_{self.dataset.lower()}.txt"
+        sys_prompt_path = os.path.join(prompt_dir, filename)
         
-        # 尝试读取对应 index 的 prompt 文件
+        # =======================================================
+        # 2. 读取主系统提示词 (Base System Prompt)
+        # =======================================================
+        # 逻辑：如果初始化时传了 my_sys_prompt 就用传的，否则读文件，读不到用默认
+        if self.my_sys_prompt is not None and not self.use_my_sys_prompt:
+            # 注意：这里的判断是为了区分初始化传入的 prompt 和下面 index 加载的 prompt
+            sys_prompt = self.my_sys_prompt
+        elif os.path.exists(sys_prompt_path):
+            print(f"✅ Loading base system prompt from: {sys_prompt_path}")
+            with open(sys_prompt_path, 'r', encoding='utf-8') as f:
+                sys_prompt = f.read()
+        else:
+            print(f"⚠️ [Warning] System prompt file not found at: {sys_prompt_path}")
+            sys_prompt = "You are an intelligent programming assistant to produce Python algorithmic solutions."
+
+        # =======================================================
+        # 3. 读取额外提示词 (Indexed Prompt, e.g., 0.txt)
+        # =======================================================
         if sys_prompt_index is not None and sys_prompt_index >= 0:
-             # 假设您已经按建议修改了 get_txt_path()
-             indexed_path = self.get_txt_path() + str(sys_prompt_index) + ".txt"
-             if os.path.exists(indexed_path):
-                 print(f"Loading custom prompt from: {indexed_path}")
-                 with open(indexed_path, 'r', encoding='utf-8') as f:
-                     # 这里选择直接覆盖还是拼接，取决于您的需求
-                     # sys_prompt = f.read().strip() 
-                     self.my_sys_prompt = f.read().strip()
-                     self.use_my_sys_prompt = True
+            # 获取相对路径
+            rel_txt_path = self.get_txt_path() 
+            # 兼容处理：去掉开头的 ./ 防止路径拼接出错
+            if rel_txt_path.startswith("./"):
+                rel_txt_path = rel_txt_path[2:]
+            
+            # 拼接绝对路径：Project Root + txt路径 + index.txt
+            indexed_path = os.path.join(project_root, rel_txt_path, f"{sys_prompt_index}.txt")
+            
+            if os.path.exists(indexed_path):
+                print(f"Loading custom prompt index from: {indexed_path}")
+                with open(indexed_path, 'r', encoding='utf-8') as f:
+                    # 读取内容存入 self.my_sys_prompt 用于后续拼接
+                    self.my_sys_prompt = f.read().strip()
+                    self.use_my_sys_prompt = True
+            else:
+                print(f"⚠️ Warning: Custom prompt index file not found: {indexed_path}")
 
-        with open(sys_prompt_path, 'r', encoding='utf-8') as f:
-            sys_prompt = f.read()
-
+        # =======================================================
+        # 4. 生成回复
+        # =======================================================
         assistant = "<|im_start|>assistant\n```python"
+        
         if self.use_prompt:
             if self.use_my_sys_prompt:
-                # 拼接逻辑
-                sys_prompt += self.my_sys_prompt
+                # 拼接：主系统提示词 + 换行 + 额外提示词
+                final_sys_prompt = sys_prompt + self.my_sys_prompt
+            else:
+                final_sys_prompt = sys_prompt
             
-            response = self.get_qwen_response(prompt, do_sample=False, sys_prompt=sys_prompt, add_generation_prompt=False, assistant=assistant)
+            response = self.get_qwen_response(
+                prompt, 
+                do_sample=False, 
+                sys_prompt=final_sys_prompt, 
+                add_generation_prompt=False, 
+                assistant=assistant
+            )
         else:
-            response = self.get_qwen_response(prompt, do_sample=False, add_generation_prompt=False, assistant=assistant)
+            # 不使用 prompt 增强，仅使用主系统提示词
+            response = self.get_qwen_response(
+                prompt, 
+                do_sample=False, 
+                sys_prompt=sys_prompt, # 即使不增强，也应该传入基础设定的 system prompt
+                add_generation_prompt=False, 
+                assistant=assistant
+            )
 
         gen_strs = [response.replace("\t", "    ")]
         return gen_strs
@@ -475,6 +524,7 @@ def make_model(
             max_new_tokens=2048,
             my_sys_prompt=my_sys_prompt,
             dataset=dataset,
+            model_type=model_type,
         )
     elif model_type == "llama3":
         return LLAMA3(

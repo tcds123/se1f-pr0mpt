@@ -88,9 +88,9 @@ def code_generate(args,
 
             dataset = get_human_eval_plus()
         elif args.dataset == "mbpp":
-            # ================= [修改后：手动加载本地 MBPP+ (已解压 .jsonl 版)] =================
-                import json
-                import os
+            # # ================= [修改后：手动加载本地 MBPP+ (已解压 .jsonl 版)] =================
+            #     import json
+            #     import os
                 
                 # 请确认文件名是否正确，例如 MbppPlus.jsonl
                 local_mbpp_path = "/data/zhuldz/self-prompt/self-prompt/data/MbppPlus.jsonl" 
@@ -256,7 +256,6 @@ def postprocess(model, outputs, dataset=None):
 
     return outputs
 
-
 def qwen_humaneval_post_process(text, entry_point):
     # 正则表达式匹配代码块
     code_block_pattern = re.compile(
@@ -280,6 +279,41 @@ def qwen_humaneval_post_process(text, entry_point):
     # if no code block is found, assume the LM is simply filling the code
     return textwrap.indent(text, " " * 4)
 
+
+# def qwen_humaneval_post_process(text, entry_point):
+#     """
+#     针对 HumanEval 的后处理：
+#     必须去掉 'def func_name(...):' 这一行，只保留函数体。
+#     """
+#     text = text.strip()
+    
+#     # 1. 清洗 Markdown 标记
+#     if "```python" in text:
+#         text = text.split("```python")[1]
+#     elif "```" in text:
+#         text = text.split("```")[1]
+#     if "```" in text:
+#         text = text.split("```")[0]
+        
+#     text = text.strip()
+
+#     # 2. 核心逻辑：找到 def 行并截断
+#     # 匹配 "def entry_point(...):" 及其后面的换行
+#     # re.DOTALL 确保 . 能匹配换行符以外的字符
+#     pattern = re.compile(rf"def\s+{entry_point}.*?:\s*\n", re.DOTALL)
+#     match = pattern.search(text)
+    
+#     if match:
+#         # 返回 def 之后的所有内容（即函数体）
+#         return text[match.end():]
+        
+#     # 3. 如果没找到 def，可能模型直接输出了 body，或者输出格式不对
+#     # 尝试保留原文本，但 HumanEval 要求 body 必须缩进
+#     lines = text.split('\n')
+#     if lines and not lines[0].startswith((' ', '\t')):
+#         return textwrap.indent(text, '    ')
+        
+#     return text
 
 def qwen_mbpp_post_process(text):
     """
