@@ -29,9 +29,9 @@ logger = logging.get_logger(__name__)
 random.seed(42)
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-# TODO: 请确认此处路径是否为你的 Qwen3-4B 模型实际路径
-TOKENIZER = AutoTokenizer.from_pretrained('/data/private/self-prompt/models/Qwen3-4B')
-MODEL_NAME = 'qwen3-4b'
+# TODO: 请确认此处路径是否为你的 Qwen3-8B 模型实际路径
+TOKENIZER = AutoTokenizer.from_pretrained('/data/private/self-prompt/models/Qwen3-8B')
+MODEL_NAME = 'qwen3_8b'
 
 
 @add_start_docstrings(

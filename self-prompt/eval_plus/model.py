@@ -186,35 +186,24 @@ class QWEN2(DecoderBase):
         self.model = AutoModelForCausalLM.from_pretrained(name, trust_remote_code=True, device_map="auto")
         self.tokenizer = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
         
-        # ✅ 修复1：强制初始化
         self.my_sys_prompt = my_sys_prompt if my_sys_prompt is not None else ""
         self.use_my_sys_prompt = True if self.my_sys_prompt else False
 
-    # ✅ 修复2：添加 sys_prompt_index 参数
     def codegen(self, sys_prompt_index: int, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
-        # 必须导入 os
         import os 
 
         print("********** do_sample: ", do_sample)
         if do_sample:
             assert self.temperature > 0, "Temperature must be greater than 0!"
 
-        # =======================================================
-        # 1. 动态构建主系统提示词路径 (绝对路径)
-        # =======================================================
         current_file_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(current_file_dir) # 回退到 self-prompt 根目录
+        project_root = os.path.dirname(current_file_dir) 
         
         prompt_dir = os.path.join(project_root, "prompt", "system_prompt")
         filename = f"{self.model_type}_{self.dataset.lower()}.txt"
         sys_prompt_path = os.path.join(prompt_dir, filename)
         
-        # =======================================================
-        # 2. 读取主系统提示词 (Base System Prompt)
-        # =======================================================
-        # 逻辑：如果初始化时传了 my_sys_prompt 就用传的，否则读文件，读不到用默认
         if self.my_sys_prompt is not None and not self.use_my_sys_prompt:
-            # 注意：这里的判断是为了区分初始化传入的 prompt 和下面 index 加载的 prompt
             sys_prompt = self.my_sys_prompt
         elif os.path.exists(sys_prompt_path):
             print(f"✅ Loading base system prompt from: {sys_prompt_path}")
@@ -224,13 +213,8 @@ class QWEN2(DecoderBase):
             print(f"⚠️ [Warning] System prompt file not found at: {sys_prompt_path}")
             sys_prompt = "You are an intelligent programming assistant to produce Python algorithmic solutions."
 
-        # =======================================================
-        # 3. 读取额外提示词 (Indexed Prompt, e.g., 0.txt)
-        # =======================================================
         if sys_prompt_index is not None and sys_prompt_index >= 0:
-            # 获取相对路径
             rel_txt_path = self.get_txt_path() 
-            # 兼容处理：去掉开头的 ./ 防止路径拼接出错
             if rel_txt_path.startswith("./"):
                 rel_txt_path = rel_txt_path[2:]
             
@@ -240,15 +224,11 @@ class QWEN2(DecoderBase):
             if os.path.exists(indexed_path):
                 print(f"Loading custom prompt index from: {indexed_path}")
                 with open(indexed_path, 'r', encoding='utf-8') as f:
-                    # 读取内容存入 self.my_sys_prompt 用于后续拼接
                     self.my_sys_prompt = f.read().strip()
                     self.use_my_sys_prompt = True
             else:
                 print(f"⚠️ Warning: Custom prompt index file not found: {indexed_path}")
 
-        # =======================================================
-        # 4. 生成回复
-        # =======================================================
         assistant = "<|im_start|>assistant\n```python"
         
         if self.use_prompt:
@@ -304,7 +284,7 @@ class QWEN2(DecoderBase):
             do_sample=do_sample,
             top_p=0.95 if do_sample else 1.0,
             top_k=0,
-            repetition_penalty=1.2,
+            #repetition_penalty=1.2,
         )
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)

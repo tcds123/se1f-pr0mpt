@@ -317,26 +317,30 @@ def qwen_humaneval_post_process(text, entry_point):
 
 def qwen_mbpp_post_process(text):
     """
-    修复版后处理：保留 import/from 语句，并提取完整代码块
+    贪婪版后处理：
+    1. 优先提取 Markdown 代码块。
+    2. 如果没有 Markdown，找到第一个代码特征（import/from/def），并保留之后的所有内容。
+    3. 不再尝试通过缩进来截断代码，防止误删。
     """
     text = text.strip()
     
-    # 1. 优先提取 Markdown 代码块 (Chat 模型)
+    # --- 策略 1: Markdown (最优先) ---
+    if "```python" in text:
+        try:
+            code = text.split("```python")[1]
+            if "```" in code:
+                code = code.split("```")[0]
+            return code.strip()
+        except IndexError:
+            pass
+            
     if text.startswith("```"):
-        if text.startswith("```python"):
-            text = text[9:]
-        elif text.startswith("```"):
-            text = text[3:]
+        text = text[3:]
         if "```" in text:
             text = text.split("```")[0]
         return text.strip()
-    
-    if "```" in text:
-        text = text.split("```")[0]
-        return text.strip()
 
-    # 2. 针对 Base 模型：提取包含 imports 的代码块
-    # 逻辑：找到第一个以 import, from 或 def 开头的行，作为代码起始
+    # --- 策略 2: 贪婪提取 (针对 Base 模型) ---
     lines = text.split('\n')
     start_index = -1
     
@@ -346,15 +350,12 @@ def qwen_mbpp_post_process(text):
         if line_strip.startswith("def ") or \
            line_strip.startswith("import ") or \
            line_strip.startswith("from ") or \
-           line_strip.startswith("@"): # 装饰器
+           line_strip.startswith("@"): 
             start_index = i
             break
             
     if start_index != -1:
-        # 简单的截断策略：从代码开始处截取到文本结束
-        # (通常 Base 模型生成完代码后会停止，或者接新的 task_id，或者输出解释)
-        # 为了更安全，可以保留原有的 indentation 截断逻辑作为辅助，但在 import 场景下较难通用
-        # 这里建议直接返回从 start_index 开始的所有内容，EvalPlus 运行时的容错性通常能处理末尾的杂音
+        # 贪婪策略：保留从起点开始的所有内容
         return "\n".join(lines[start_index:]).strip()
 
     return text

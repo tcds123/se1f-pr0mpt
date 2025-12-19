@@ -1,5 +1,6 @@
 import os.path
 import os
+import textwrap
 import re
 from transformers import AutoTokenizer
 from transformers.utils import logging
@@ -10,12 +11,6 @@ import random
 import json
 import sys
 
-# ==================== [新增：自动修复环境变量] ====================
-# 强制去掉代理设置中可能存在的错误引号 (")，解决 '8080"' 报错
-for key in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY']:
-    if key in os.environ:
-        os.environ[key] = os.environ[key].replace('"', '')
-        print(f"Fixed env var {key}: {os.environ[key]}")
 
 logger = logging.get_logger(__name__)
 
@@ -52,6 +47,119 @@ MODEL_MAPPING = {
     },
 }
 
+def qwen_mbpp_post_process(text):
+    """
+    贪婪版后处理：
+    1. 优先提取 Markdown 代码块。
+    2. 如果没有 Markdown，找到第一个代码特征（import/from/def），并保留之后的所有内容。
+    3. 不再尝试通过缩进来截断代码，防止误删。
+    """
+    text = text.strip()
+    
+    # --- 策略 1: Markdown (最优先) ---
+    if "```python" in text:
+        try:
+            code = text.split("```python")[1]
+            if "```" in code:
+                code = code.split("```")[0]
+            return code.strip()
+        except IndexError:
+            pass
+            
+    if text.startswith("```"):
+        text = text[3:]
+        if "```" in text:
+            text = text.split("```")[0]
+        return text.strip()
+
+    # --- 策略 2: 贪婪提取 (针对 Base 模型) ---
+    lines = text.split('\n')
+    start_index = -1
+    
+    for i, line in enumerate(lines):
+        line_strip = line.strip()
+        # 寻找代码的起始特征
+        if line_strip.startswith("def ") or \
+           line_strip.startswith("import ") or \
+           line_strip.startswith("from ") or \
+           line_strip.startswith("@"): 
+            start_index = i
+            break
+            
+    if start_index != -1:
+        # 贪婪策略：保留从起点开始的所有内容
+        return "\n".join(lines[start_index:]).strip()
+
+    return text
+
+
+def qwen_humaneval_post_process(text, entry_point):
+    # 正则表达式匹配代码块
+    code_block_pattern = re.compile(
+        rf"```(?:[Pp]ython\n)?.*?def\s+{entry_point}.*?:\n(.*?)\n```", re.DOTALL
+    )
+    code_block = code_block_pattern.search(text)
+    if code_block is None:
+        code_block_pattern = re.compile(
+            rf"def\s+{entry_point}.*?:\n(.*?)(?:\n(?!\n*(?:  |\t))|$)", re.DOTALL
+        )
+        code_block = code_block_pattern.search(text)
+    if code_block is None:
+        code_block_pattern = re.compile(
+            r"def.*?:\n(.*?)(?:\n(?!\n*(?:  |\t))|$)", re.DOTALL
+        )
+        code_block = code_block_pattern.search(text)
+
+    if code_block is not None:
+        return code_block.group(1)
+
+    # if no code block is found, assume the LM is simply filling the code
+    return textwrap.indent(text, " " * 4)
+
+
+# def qwen_humaneval_post_process(text, entry_point):
+#     """
+#     针对 HumanEval 的贪婪后处理：
+#     1. 优先清洗 Markdown (```python ... ```)。
+#     2. 精确寻找 'def entry_point(...):' 行，并截取其后的内容（保留函数体）。
+#     3. 如果没找到 def 头，假设模型直接输出了函数体，尝试智能缩进。
+#     4. 采用贪婪策略：一旦确定代码开始，保留后续所有内容，防止因注释/空行被误截断。
+#     """
+#     text = text.strip()
+    
+#     # --- 1. Markdown 清洗 ---
+#     if "```python" in text:
+#         try:
+#             code = text.split("```python")[1]
+#             if "```" in code:
+#                 code = code.split("```")[0]
+#             text = code.strip()
+#         except IndexError:
+#             pass
+#     elif text.startswith("```"):
+#         text = text[3:]
+#         if "```" in text:
+#             text = text.split("```")[0]
+#         text = text.strip()
+
+#     # --- 2. 寻找并去除函数头 (Prompt Repetition) ---
+#     # 使用正则匹配：def + 空格 + 函数名 + 任意参数 + 冒号 + 换行
+#     # re.DOTALL 确保如果参数换行也能匹配到
+#     pattern = re.compile(rf"def\s+{entry_point}.*?:\s*\n", re.DOTALL)
+#     match = pattern.search(text)
+    
+#     if match:
+#         # 截取 def 之后的所有内容（即函数体）
+#         return text[match.end():]
+        
+#     # --- 3. 兜底处理：没找到 def 头 ---
+#     # 如果代码不是以 def 开头，可能直接是 body。
+#     # HumanEval 拼接时需要缩进，检测一下是否有缩进，没有则加上
+#     lines = text.split('\n')
+#     if lines and not lines[0].startswith((' ', '\t')):
+#         return textwrap.indent(text, '    ')
+        
+#     return text
 
 class Embedding(torch.nn.Module):
     """Language model embeddings."""
@@ -765,7 +873,18 @@ class Embedding(torch.nn.Module):
                         break  # 防止永久卡死 
                     assert outputs, "No outputs from model!"
                     for impl in outputs:
+                        # --- 新增：针对 Qwen + HumanEval 的后处理 ---
+                        if dataset == "humaneval" and ("qwen" in self.model_name.lower()):
+                            entry_point = task["entry_point"]
+                            #impl = qwen_humaneval_post_process(impl, entry_point)
+                            impl = [qwen_humaneval_post_process(impl[0], task["entry_point"])]
+                    
+                        # --- 新增：针对 Qwen + MBPP 的后处理 (之前加过的) ---
+                        elif dataset == "mbpp" and ("qwen" in self.model_name.lower()):
+                            impl = qwen_mbpp_post_process(impl)
+                            
                         solution = prompt + impl if model.is_direct_completion() else impl
+                        
                         sanitized_solution = sanitize(
                             solution, entrypoint=task["entry_point"]
                         )
